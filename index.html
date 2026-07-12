@@ -706,7 +706,8 @@
                 
                 let perksHTML = '';
                 if(team.perks.length > 0) {
-                    perksHTML = '<div class="mt-3 flex gap-2 justify-center">';
+                    // SE AGREGÓ: flex-wrap para que los poderes no desborden la tarjeta si ganan muchos
+                    perksHTML = '<div class="mt-3 flex flex-wrap gap-1 justify-center">';
                     team.perks.forEach((perk, perkIndex) => {
                         perksHTML += `<button onclick="usePerk(${index}, ${perkIndex})" class="perk-btn shadow-lg" title="${perk.name}" ${index !== currentTeamTurn || isAnsweredFinal ? 'disabled' : ''}>${perk.icon}</button>`;
                     });
@@ -880,6 +881,8 @@
                  showToast(`¡${teams[currentTeamTurn].name} pierde su turno!`);
                  
                  if(teamsTriedCurrentQuestion.length >= numTeams) {
+                     // CORRECCIÓN: Evita el estado inconsistente si se pierde un turno y se acaba la ronda
+                     isAnsweredFinal = true;
                      const q = gameQuestions[currentQuestionIndex];
                      document.querySelectorAll('.btn-option')[q.correctIndex].classList.add('correct');
                      showExplanation();
@@ -908,9 +911,10 @@
         }
 
         function nextTurn() {
-            startingTeamForRound = (startingTeamForRound + 1) % numTeams;
+            // CORRECCIÓN: 'turnDirection' persite. La "Reversa" ahora aplica a todo el juego globalmente.
+            startingTeamForRound = (startingTeamForRound + turnDirection + numTeams) % numTeams;
             currentTeamTurn = startingTeamForRound;
-            turnDirection = 1; 
+            
             currentQuestionIndex++;
             loadQuestion();
         }
@@ -924,8 +928,8 @@
             if (currentQuestionIndex >= gameQuestions.length - 1) {
                 nextBtn.innerText = "Ver Resultados 🏆";
             } else {
-                let nextTeamName = teams[(startingTeamForRound + 1) % numTeams].name;
-                nextBtn.innerText = numTeams > 1 ? `Siguiente Equipo: ${nextTeamName} ➡️` : `Siguiente Pregunta ➡️`;
+                let nextTeamName = teams[(startingTeamForRound + turnDirection + numTeams) % numTeams].name;
+                nextBtn.innerText = numTeams > 1 ? `Siguiente Eq: ${nextTeamName} ➡️` : `Siguiente Pregunta ➡️`;
             }
         }
 

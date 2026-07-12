@@ -6,8 +6,16 @@
     <title>Trivia Bíblica Avanzada</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
-            background-color: #0f172a; 
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: #f8fafc; 
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
@@ -15,21 +23,27 @@
         }
         
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(30, 41, 59, 0.65); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
         .btn-option {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
         }
 
         .btn-option:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.5);
             background-color: #334155; 
+        }
+
+        .btn-option:active:not(:disabled) {
+            transform: translateY(1px) scale(0.98);
         }
 
         .correct {
@@ -132,15 +146,22 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(234, 179, 8, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.3); }
+        }
+
         .team-card {
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             border: 2px solid transparent;
         }
+
         .team-active {
             border-color: #eab308; 
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+            transform: scale(1.08);
             background-color: #1e293b !important;
+            animation: pulseGlow 2s infinite;
         }
         
         .perk-btn {

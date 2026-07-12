@@ -216,10 +216,13 @@
             </div>
 
             <div class="glass-panel p-6 md:p-8 rounded-3xl w-full relative overflow-hidden">
-                <!-- Temporizador -->
-                <div class="flex justify-between text-sm text-slate-400 mb-2 font-medium">
+                <!-- Temporizador y Botón de Inicio -->
+                <div class="flex justify-between items-center text-sm text-slate-400 mb-2 font-medium">
                     <span id="question-counter" class="text-sky-400">Pregunta 1/20</span>
-                    <span id="time-text" class="tabular-nums">20s</span>
+                    <button id="start-timer-btn" onclick="startTimer()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold shadow-md transition animate-pulse hidden">
+                        ⏱️ Iniciar Tiempo
+                    </button>
+                    <span id="time-text" class="tabular-nums text-lg">30s</span>
                 </div>
                 <div class="timer-bar-container">
                     <div id="timer-bar" class="timer-bar"></div>
@@ -405,7 +408,7 @@
         let isAnsweredFinal = false; 
         
         let timerInterval;
-        let timeLeft = 20;
+        let timeLeft = 30; // Tiempo extendido a 30 segundos
 
         // Memoria Global Anti-Repetición
         let playedQuestionsIds = { facil: [], medio: [], dificil: [] };
@@ -554,6 +557,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-option w-full p-4 md:p-5 rounded-2xl bg-slate-800 border border-slate-600 font-semibold text-base md:text-lg hover:bg-slate-700 text-left text-slate-200 shadow-md';
                 btn.innerText = opt;
+                btn.disabled = true; // Bloqueado hasta iniciar el tiempo
                 btn.onclick = () => processTurnResult(index === q.correctIndex, btn, index);
                 optionsContainer.appendChild(btn);
             });
@@ -561,12 +565,32 @@
             document.getElementById('explanation-container').classList.add('hidden');
             
             renderTeamsUI();
-            startTimer();
+            
+            // Preparar temporizador pero NO iniciarlo automáticamente
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            document.getElementById('time-text').innerText = `${timeLeft}s`;
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            timerBar.classList.remove('timer-warning');
+            document.getElementById('time-text').classList.remove('text-red-400');
+            
+            // Mostrar botón para iniciar el tiempo
+            document.getElementById('start-timer-btn').classList.remove('hidden');
         }
 
         function startTimer() {
+            document.getElementById('start-timer-btn').classList.add('hidden');
+            
+            // Desbloquear botones de opciones que no hayan sido fallados
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(b => {
+                if(!b.classList.contains('incorrect')) b.disabled = false;
+            });
+
             clearInterval(timerInterval);
-            timeLeft = 20; 
+            timeLeft = 30; 
             updateTimerUI();
 
             const timerBar = document.getElementById('timer-bar');
@@ -590,7 +614,7 @@
             document.getElementById('time-text').innerText = `${timeLeft}s`;
             const timerBar = document.getElementById('timer-bar');
             
-            const percentage = (timeLeft / 20) * 100;
+            const percentage = (timeLeft / 30) * 100;
             timerBar.style.width = `${percentage}%`;
             
             if (timeLeft <= 5) {
@@ -671,12 +695,20 @@
 
             renderTeamsUI();
             
-            // Reactivar botones no fallados para el robo
+            // Preparar el temporizador para el equipo que roba, esperando a que den clic
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            document.getElementById('time-text').innerText = `${timeLeft}s`;
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            timerBar.classList.remove('timer-warning');
+            document.getElementById('time-text').classList.remove('text-red-400');
+            
+            // Mostrar botón y mantener opciones bloqueadas
+            document.getElementById('start-timer-btn').classList.remove('hidden');
             const buttons = document.querySelectorAll('.btn-option');
-            buttons.forEach(b => {
-                if(!b.classList.contains('incorrect')) b.disabled = false;
-            });
-            startTimer(); // Reinicia el tiempo a 20s para el robo
+            buttons.forEach(b => b.disabled = true);
         }
 
         function nextTurn() {

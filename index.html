@@ -88,7 +88,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Celebración Modal */
         #celebration-modal {
             display: none;
             position: fixed;
@@ -187,7 +186,6 @@
 
     <div id="app-container" class="w-full max-w-3xl flex flex-col gap-6">
         
-        <!-- Header -->
         <header class="text-center mb-2">
             <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 drop-shadow-lg mb-2 tracking-tight">
                 Trivia Bíblica
@@ -214,7 +212,6 @@
                 </div>
             </div>
 
-            <!-- Botones de Dificultad -->
             <div class="w-full flex flex-col gap-4">
                 <button onclick="initGame('facil')" class="w-full py-4 rounded-xl font-bold text-lg bg-slate-800 border border-emerald-500/30 hover:bg-slate-700 hover:border-emerald-500 text-emerald-400 shadow-lg transition duration-300">
                     Nivel Fácil
@@ -228,16 +225,13 @@
             </div>
         </div>
 
-        <!-- Pantalla de Juego -->
         <div id="game-screen" class="hidden flex-col gap-4 fade-in w-full">
             
-            <!-- Panel de Equipos (Top Bar) -->
             <div id="teams-panel" class="flex justify-around gap-2 mb-2 flex-wrap">
-                <!-- Se llena dinámicamente -->
+                <!-- Dinámico -->
             </div>
 
             <div class="glass-panel p-6 md:p-8 rounded-3xl w-full relative overflow-hidden">
-                <!-- Temporizador y Botón de Inicio -->
                 <div class="flex justify-between items-center text-sm text-slate-400 mb-2 font-medium">
                     <span id="question-counter" class="text-sky-400">Pregunta 1/20</span>
                     <button id="start-timer-btn" onclick="startTimer()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold shadow-md transition animate-pulse hidden">
@@ -249,33 +243,28 @@
                     <div id="timer-bar" class="timer-bar"></div>
                 </div>
 
-                <!-- Categoría -->
                 <div class="flex justify-center mb-6">
                     <span id="category-badge" class="px-5 py-1.5 rounded-full bg-sky-900/50 text-sky-200 text-xs font-bold uppercase tracking-wider border border-sky-700/50">
                         Categoría
                     </span>
                 </div>
 
-                <!-- Imagen (Opcional) -->
                 <div id="image-container" class="hidden w-full flex justify-center mb-8">
                     <img id="question-image" src="" alt="Imagen de la pregunta" class="max-h-52 rounded-xl shadow-xl border border-slate-600/50 object-contain">
                 </div>
 
-                <!-- Pregunta -->
                 <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8 leading-relaxed text-slate-50">
                     ¿Pregunta?
                 </h2>
 
-                <!-- Opciones -->
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Botones generados dinámicamente -->
+                    <!-- Opciones Dinámicas -->
                 </div>
             </div>
 
-            <!-- Explicación (Aparece tras responder) -->
             <div id="explanation-container" class="hidden glass-panel p-6 rounded-2xl border-l-4 border-l-sky-500 fade-in">
                 <h3 class="font-bold text-lg mb-3 text-sky-400 flex items-center gap-2">
-                    <span>💡</span> Dato Interesante
+                    <span>💡</span> Explicación
                 </h3>
                 <p id="explanation-text" class="text-slate-300 leading-relaxed text-sm md:text-base"></p>
                 <div class="mt-6 flex justify-end">
@@ -286,13 +275,12 @@
             </div>
         </div>
 
-        <!-- Pantalla de Resultados -->
         <div id="results-screen" class="hidden glass-panel p-10 rounded-3xl flex-col items-center text-center fade-in">
             <span class="text-6xl mb-6 block">🏁</span>
             <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 mb-8">¡Juego Terminado!</h2>
             
             <div id="final-podium" class="w-full flex flex-col gap-4 mb-10">
-                <!-- Podio dinámico -->
+                <!-- Podio -->
             </div>
 
             <div class="flex flex-col md:flex-row gap-4 w-full justify-center">
@@ -320,101 +308,104 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast">¡Notificación!</div>
 
     <script>
         const questionsDB = [
             // ================= NIVEL FÁCIL =================
-            // Con Imágenes
-            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xTzZgd5Q/Noe.webp", question: "Lee la pista en la imagen. ¿De quién se trata?", options: ["Lot", "Moisés", "Noé", "Abrahán"], correctIndex: 2, explanation: "Noé fue un hombre justo que construyó un arca enorme por mandato de Dios para salvar a su familia y a los animales del Diluvio universal." },
-            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/qM3FQ7wk/David.webp", question: "¿Quién es este valiente personaje?", options: ["David", "Josué", "Gedeón", "Sansón"], correctIndex: 0, explanation: "David, siendo apenas un joven pastor, confió en Jehová y derrotó al gigante filisteo Goliat usando solo una honda y piedras." },
-            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/MKQLtG5z/Jonas.webp", question: "¿A quién le ocurrió esto?", options: ["Pedro", "Jonás", "Pablo", "Elías"], correctIndex: 1, explanation: "Jonás intentó huir de la misión que Dios le dio en Nínive, pero tras una tormenta, fue tragado por un enorme pez donde estuvo 3 días." },
-            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/BQKzNvpS/daniel.webp", question: "¿Quién mantuvo su costumbre de orar a pesar de la ley?", options: ["Jeremías", "Daniel", "Ezequiel", "Isaías"], correctIndex: 1, explanation: "Daniel continuó orando a Jehová tres veces al día, lo que lo llevó a ser arrojado al foso de los leones, de donde Dios lo rescató." },
-            { difficulty: "facil", category: "Cronología", image: "https://i.postimg.cc/tCxcDgkR/Creacion.webp", question: "¿Qué evento representa esta línea de tiempo?", options: ["La reconstrucción del templo", "El diluvio", "La Creación de la Tierra", "Las plagas de Egipto"], correctIndex: 2, explanation: "Génesis describe que Dios preparó la Tierra para los seres humanos durante 6 'días' creativos (períodos largos de tiempo) y descansó en el séptimo." },
+            // Imágenes
+            { difficulty: "facil", category: "Personajes", image: "https://i.postimg.cc/xTzZgd5Q/Noe.webp", question: "Lee la pista en la imagen. ¿De quién se trata?", options: ["Lot", "Moisés", "Noé", "Abrahán"], correctIndex: 2, explanation: "Noé construyó el arca obedeciendo a Dios." },
+            { difficulty: "facil", category: "Personajes", image: "https://i.postimg.cc/qM3FQ7wk/David.webp", question: "¿Quién es este valiente personaje?", options: ["David", "Josué", "Gedeón", "Sansón"], correctIndex: 0, explanation: "David derrotó al gigante filisteo Goliat usando solo una honda." },
+            { difficulty: "facil", category: "Personajes", image: "https://i.postimg.cc/MKQLtG5z/Jonas.webp", question: "¿A quién le ocurrió esto?", options: ["Pedro", "Jonás", "Pablo", "Elías"], correctIndex: 1, explanation: "Jonás fue tragado por un gran pez tras huir de su misión." },
+            { difficulty: "facil", category: "Personajes", image: "https://i.postimg.cc/BQKzNvpS/daniel.webp", question: "¿Quién mantuvo su costumbre de orar a pesar de la ley?", options: ["Jeremías", "Daniel", "Ezequiel", "Isaías"], correctIndex: 1, explanation: "Daniel continuó orando a Jehová, lo que lo llevó al foso de los leones." },
+            { difficulty: "facil", category: "Cronología", image: "https://i.postimg.cc/tCxcDgkR/Creacion.webp", question: "¿Qué evento representa esta línea de tiempo?", options: ["Reconstrucción del templo", "El diluvio", "La Creación", "Las plagas"], correctIndex: 2, explanation: "La Creación tomó 6 periodos largos llamados días creativos." },
             
-            // Creencias y Doctrinas Básicas
-            { difficulty: "facil", category: "Prácticas Espiritistas", question: "¿Qué actitud debe tener el cristiano frente al horóscopo o los videntes?", options: ["Consultarlos solo por diversión", "Creer en ellos solo si no hacen daño", "Rechazarlos totalmente porque nos ponen en contacto con demonios", "Son inofensivos porque no son reales"], correctIndex: 2, explanation: "La Biblia condena el espiritismo en todas sus formas porque es el medio que usan los demonios para engañar a las personas." },
-            { difficulty: "facil", category: "Neutralidad", question: "Cuando se toca el himno nacional o se saluda a la bandera, ¿qué debe hacer un cristiano?", options: ["Participar para no ofender a los demás", "Respetar el acto sin participar, pues es idolatría", "Burlarse de quienes participan", "Abandonar el lugar inmediatamente"], correctIndex: 1, explanation: "Los siervos de Jehová respetan los símbolos patrios pero no les rinden actos de adoración, manteniendo su lealtad exclusiva a Dios." },
-            { difficulty: "facil", category: "Reuniones", question: "Según Hebreos 10:24, 25, ¿cuál es uno de los propósitos principales de las reuniones?", options: ["Hacer vida social", "Recolectar donaciones para el Salón", "Estarnos pendientes unos de otros para motivarnos al amor", "Relajarnos y desconectar del mundo"], correctIndex: 2, explanation: "Las reuniones cristianas tienen el propósito principal de edificarnos espiritualmente, adorar a Jehová y animarnos mutuamente." },
-            { difficulty: "facil", category: "La Sangre", question: "¿Cuál es la postura bíblica respecto a las transfusiones de sangre completa?", options: ["Aceptarlas en emergencia", "Aceptarlas si el médico lo recomienda", "Rechazarlas basándose en el mandato de abstenerse de sangre", "Solo aceptar sangre de familiares"], correctIndex: 2, explanation: "En Hechos 15:28, 29 se da el mandato directo a los cristianos de 'abstenerse de sangre'." },
-            { difficulty: "facil", category: "Fiestas", question: "¿Por qué los testigos de Jehová no celebran cumpleaños?", options: ["Creen que nacemos con pecado", "La Biblia solo menciona dos (de paganos) con finales fatales", "Para no gastar dinero", "Porque prefieren celebrar aniversarios"], correctIndex: 1, explanation: "La Biblia solo registra los cumpleaños del Faraón y de Herodes (donde hubo ejecuciones), y la costumbre tiene origen pagano." },
-            { difficulty: "facil", category: "El Reino de Dios", question: "¿Qué es el Reino de Dios?", options: ["Una condición del corazón", "La iglesia en la tierra", "Un gobierno real establecido por Jehová en el cielo", "Un sentimiento de paz mundial"], correctIndex: 2, explanation: "El Reino de Dios es un gobierno real y celestial con Jesucristo como Rey, que pronto dominará toda la Tierra." },
-            { difficulty: "facil", category: "Uso de Imágenes", question: "¿Qué dice la Biblia sobre el uso de imágenes en la adoración?", options: ["Son útiles para concentrarse", "Dios las aprueba si no se adoran directamente", "Dios condena su uso y exige devoción exclusiva", "Solo las imágenes de Jesús están permitidas"], correctIndex: 2, explanation: "Éxodo 20:4, 5 es claro al prohibir hacerse imágenes talladas o inclinarse ante ellas." },
-            { difficulty: "facil", category: "Condición de los muertos", question: "Según Eclesiastés 9:5, ¿qué saben los muertos?", options: ["Todo lo que pasa en la tierra", "Solo lo bueno que hicieron", "No saben nada en absoluto", "Saben que están esperando el juicio"], correctIndex: 2, explanation: "La Biblia enseña que al morir, la persona deja de existir y pierde toda consciencia." },
-            { difficulty: "facil", category: "Esperanza", question: "¿Cuál es la esperanza principal para la gran mayoría de los siervos de Dios que han muerto?", options: ["Ir al cielo inmediatamente", "Reencarnar en una mejor persona", "Ser resucitados para vivir para siempre en la Tierra", "Convertirse en ángeles guardianes"], correctIndex: 2, explanation: "Salmo 37:29 promete que los justos heredarán la tierra y vivirán en ella para siempre." },
+            // Vida Cristiana y Doctrinas (Fácil)
+            { difficulty: "facil", category: "Vida Cristiana", question: "¿Qué actitud debe tener el cristiano frente al horóscopo?", options: ["Es solo diversión", "Creer solo lo bueno", "Rechazarlos totalmente", "Son inofensivos"], correctIndex: 2, explanation: "Nos pone en contacto con el ocultismo y los demonios." },
+            { difficulty: "facil", category: "Neutralidad", question: "Al tocar el himno nacional, ¿qué hace un cristiano?", options: ["Canta bajito", "Respeta el acto sin participar", "Abandona el lugar", "Se burla"], correctIndex: 1, explanation: "Mostramos respeto pero no rendimos adoración a símbolos patrios." },
+            { difficulty: "facil", category: "Reuniones", question: "Según Hebreos 10:24, 25, un propósito de las reuniones es:", options: ["Hacer negocios", "Juntar donaciones", "Motivarnos al amor", "Descansar"], correctIndex: 2, explanation: "Nos reunimos para edificarnos y animarnos mutuamente." },
+            { difficulty: "facil", category: "La Sangre", question: "¿Cuál es la postura bíblica respecto a transfusiones de sangre completa?", options: ["Aceptarlas en emergencia", "Aceptarlas si el médico insiste", "Rechazarlas siempre", "Aceptarlas de familiares"], correctIndex: 2, explanation: "La Biblia manda 'abstenerse de sangre'." },
+            { difficulty: "facil", category: "Fiestas", question: "¿Por qué los Testigos de Jehová no celebran cumpleaños?", options: ["Cuestan mucho", "Origen pagano y antecedentes bíblicos negativos", "No les gustan las fiestas", "Es pecado nacer"], correctIndex: 1, explanation: "Tienen raíces paganas y los dos registrados en la Biblia acabaron en muertes." },
+            { difficulty: "facil", category: "El Reino", question: "¿Qué es el Reino de Dios?", options: ["Un sentimiento", "La iglesia", "Un gobierno real en el cielo", "Paz interior"], correctIndex: 2, explanation: "Es un gobierno establecido por Jehová con Jesús como Rey." },
+            { difficulty: "facil", category: "Adoración", question: "¿Permite Dios usar imágenes para adorarle?", options: ["Sí, para enfocar la mente", "Solo de santos", "No, exige devoción exclusiva", "Sí, si no se les reza"], correctIndex: 2, explanation: "Dios prohíbe hacerse imágenes talladas para el culto." },
+            { difficulty: "facil", category: "La Muerte", question: "Según Eclesiastés 9:5, ¿qué saben los muertos?", options: ["Lo que pasa en la tierra", "Que están esperando", "No saben nada en absoluto", "Si fueron buenos o malos"], correctIndex: 2, explanation: "Al morir, dejamos de existir y no hay consciencia." },
+            { difficulty: "facil", category: "Esperanza", question: "¿Cuál es la esperanza para la mayoría de los siervos de Dios muertos?", options: ["Ir al cielo", "Reencarnar", "Resucitar en la Tierra", "Ser ángeles"], correctIndex: 2, explanation: "Vivirán para siempre en una tierra convertida en paraíso." },
+            { difficulty: "facil", category: "La Oración", question: "¿A través de quién debemos dirigir nuestras oraciones a Dios?", options: ["Los santos", "María", "Jesús", "Cualquier ángel"], correctIndex: 2, explanation: "Jesús dijo que nadie va al Padre sino a través de él." },
 
-            // Capciosas y Comprensión de Lectura (Fácil)
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos animales metió Moisés en el arca?", options: ["Dos de cada especie", "Siete limpios y dos impuros", "144 mil animales", "Ninguno"], correctIndex: 3, explanation: "Ninguno, porque el que construyó el arca y metió a los animales fue Noé, no Moisés." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Qué fruto le dio Eva a Adán del árbol prohibido?", options: ["Una manzana roja", "Un higo", "Una granada", "La Biblia no especifica qué fruta era"], correctIndex: 3, explanation: "La Biblia simplemente lo llama 'el fruto del árbol', nunca especifica que haya sido una manzana." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿De qué nacionalidad era el Buen Samaritano de la parábola de Moisés?", options: ["Judío", "Samaritano", "Egipcio", "La parábola no la contó Moisés"], correctIndex: 3, explanation: "La parábola del Buen Samaritano fue contada por Jesús siglos después, no por Moisés." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿En qué río del Paraíso se bautizó Adán?", options: ["Río Éufrates", "Río Tigris", "Río Jordán", "Adán nunca se bautizó"], correctIndex: 3, explanation: "El bautismo es un arreglo cristiano instituido milenios después; Adán nunca se bautizó." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántas plagas envió el rey David sobre Babilonia?", options: ["10 plagas", "7 plagas", "3 plagas", "Ninguna"], correctIndex: 3, explanation: "Ninguna. Jehová envió las 10 plagas sobre Egipto a través de Moisés, no David sobre Babilonia." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cómo se llamaba la ballena que se tragó a Jonás?", options: ["Leviatán", "Moby Dick", "Behemot", "La Biblia no la llama ballena ni le da nombre"], correctIndex: 3, explanation: "La Biblia describe simplemente que Jehová preparó 'un gran pez', sin especificar que fuera una ballena ni darle un nombre." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "Cuando Goliat mató a David con una piedra, ¿de qué tribu era David?", options: ["Tribu de Judá", "Tribu de Benjamín", "Tribu de Leví", "Goliat no mató a David"], correctIndex: 3, explanation: "Es una trampa. Fue el joven David quien mató al gigante Goliat, no al revés." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos mandamientos le dio Jesús a Moisés en el Monte Sinaí?", options: ["10 Mandamientos", "Aproximadamente 600", "2 Mandamientos principales", "Ninguno, fue Jehová"], correctIndex: 3, explanation: "Fue Jehová Dios, mediante ángeles, quien le dio la Ley a Moisés en el Sinaí, no Jesús durante su ministerio terrestre." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿En qué capítulo de Génesis bautiza Juan a Jesús?", options: ["Génesis 1", "Génesis 3", "Génesis 50", "En ninguno"], correctIndex: 3, explanation: "El bautismo de Jesús ocurre en el Nuevo Testamento (Mateo, Marcos, Lucas, Juan), no en Génesis." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Qué arma usó el apóstol Pablo para matar a Goliat?", options: ["Una espada", "Una honda y piedras", "Una lanza", "Ninguna"], correctIndex: 3, explanation: "Trampa de personajes. Fue el joven David quien mató a Goliat, no el apóstol Pablo." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos años pasaron Adán y Eva en el arca de Noé?", options: ["40 días y 40 noches", "Un poco más de un año", "Siete años", "Ninguno"], correctIndex: 3, explanation: "Adán y Eva murieron siglos antes del Diluvio. No estuvieron en el arca." },
+            // Capciosas / Comprensión Lectora (Fácil)
+            { difficulty: "facil", category: "Capciosa", question: "¿Cuántos animales metió Moisés en el arca?", options: ["Dos de cada especie", "Siete limpios", "Ninguno", "144 mil"], correctIndex: 2, explanation: "Moisés no metió animales al arca; fue Noé." },
+            { difficulty: "facil", category: "Capciosa", question: "¿De qué color era la manzana que Eva le dio a Adán?", options: ["Roja", "Verde", "Amarilla", "La Biblia no dice qué fruta era"], correctIndex: 3, explanation: "La Biblia lo llama 'el fruto del árbol', nunca especifica que sea una manzana." },
+            { difficulty: "facil", category: "Capciosa", question: "En la parábola de Moisés, ¿de dónde era el buen samaritano?", options: ["De Judea", "De Egipto", "De Samaria", "La parábola no es de Moisés"], correctIndex: 3, explanation: "La parábola fue contada por Jesús, no por Moisés." },
+            { difficulty: "facil", category: "Capciosa", question: "¿En qué río se bautizó Adán?", options: ["Jordán", "Éufrates", "Tigris", "Adán no se bautizó"], correctIndex: 3, explanation: "El bautismo es un arreglo cristiano muy posterior a Adán." },
+            { difficulty: "facil", category: "Capciosa", question: "¿A qué profeta se tragó una gran ballena por tres días?", options: ["Pedro", "Pablo", "Jonás", "Ninguno"], correctIndex: 3, explanation: "La Biblia dice que Jonás fue tragado por 'un gran pez', no especifica que fuera una ballena." },
+            { difficulty: "facil", category: "Capciosa", question: "Cuando Goliat mató a David con la honda, ¿de qué tribu era David?", options: ["Judá", "Benjamín", "Leví", "Goliat no mató a David"], correctIndex: 3, explanation: "Fue David quien mató a Goliat." },
+            { difficulty: "facil", category: "Capciosa", question: "¿Cuántos mandamientos le dio Jesús a Moisés en el Sinaí?", options: ["10", "600", "2", "Ninguno"], correctIndex: 3, explanation: "Fue Jehová Dios (mediante ángeles) quien le dio los mandamientos a Moisés, no Jesús en la tierra." },
+            { difficulty: "facil", category: "Capciosa", question: "¿En qué capítulo del libro de Génesis bautiza Juan a Jesús?", options: ["Capítulo 1", "Capítulo 3", "Capítulo 50", "En ninguno"], correctIndex: 3, explanation: "El bautismo de Jesús ocurre en el Nuevo Testamento, no en Génesis." },
+            { difficulty: "facil", category: "Capciosa", question: "¿Cuántos años pasaron Adán y Eva dentro del arca?", options: ["40 días", "1 año", "7 años", "Ninguno"], correctIndex: 3, explanation: "Adán y Eva murieron siglos antes del Diluvio. No estaban en el arca." },
+            { difficulty: "facil", category: "Capciosa", question: "¿Cuál de los apóstoles traicionó a Jesús por 30 monedas de oro?", options: ["Judas", "Pedro", "Tomás", "Ninguno por oro"], correctIndex: 3, explanation: "Judas lo traicionó, pero fue por 30 monedas de PLATA." },
 
-            // ================= NIVEL MEDIO =================
-            // Con Imágenes
-            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/SxBkDKwp/Zaqueo-(1).webp", question: "¿Quién es este personaje que quería ver a Jesús?", options: ["Mateo", "Zaqueo", "Bartimeo", "Nicodemo"], correctIndex: 1, explanation: "Zaqueo, siendo jefe de los recaudadores de impuestos y de baja estatura, se subió a un sicómoro para poder ver a Jesús pasar." },
-            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/MpCqdGhz/Timoteo-(1).webp", question: "¿De qué excelente compañero de Pablo hablamos?", options: ["Tito", "Bernabé", "Timoteo", "Marcos"], correctIndex: 2, explanation: "Timoteo fue enseñado desde su infancia por su madre Eunice y su abuela Loida en los santos escritos." },
-            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/Z5G4Vq1T/Rut-(1).webp", question: "¿Qué mujer moabita le dijo esto a su suegra Noemí?", options: ["Orpá", "Rut", "Raquel", "Rebeca"], correctIndex: 1, explanation: "Rut demostró un amor leal extraordinario al decirle a Noemí: 'A donde tú vayas, yo iré... Tu pueblo será mi pueblo y tu Dios será mi Dios'." },
-            { difficulty: "medio", category: "Cronología", image: "https://i.postimg.cc/0yTPcNL5/Decierto-(1).webp", question: "¿A qué evento bíblico corresponde esta línea de tiempo?", options: ["El reinado de David", "El ministerio de Moisés en Egipto", "El viaje de Israel por el desierto", "El tiempo que Jesús vivió en la tierra"], correctIndex: 2, explanation: "Los israelitas vagaron por el desierto durante 40 años debido a su falta de fe antes de entrar a la Tierra Prometida." },
-            { difficulty: "medio", category: "Profecías", image: "https://i.postimg.cc/LsjR7ppd/reino-de-mil-anos-(1).webp", question: "¿Qué ocurrirá durante este período según Apocalipsis?", options: ["Satanás gobernará la tierra", "La tierra será destruida por fuego", "El Reinado Milenario de Cristo", "Los 144,000 vivirán en la tierra"], correctIndex: 2, explanation: "Jesucristo gobernará como Rey sobre la Tierra durante mil años para restaurar el paraíso y la perfección humana." },
-            
-            // Creencias y Doctrinas
-            { difficulty: "medio", category: "Fracciones Sanguíneas", question: "¿Permite la Biblia el uso de fracciones menores de la sangre?", options: ["Sí, siempre", "No, bajo ninguna circunstancia", "Es un asunto de conciencia personal de cada cristiano", "Solo en casos de extrema emergencia"], correctIndex: 2, explanation: "La Biblia manda abstenerse de sangre. Sin embargo, el uso de fracciones menores derivadas de los componentes principales es una decisión de conciencia." },
-            { difficulty: "medio", category: "El Rescate", question: "¿Qué precio se pagó exactamente para liberarnos del pecado y la muerte?", options: ["El sufrimiento de Jesús en el madero", "La vida humana perfecta de Jesús, correspondiente a lo que Adán perdió", "La sangre de animales sacrificados", "Las buenas obras de los profetas"], correctIndex: 1, explanation: "La justicia perfecta de Dios exigía 'alma por alma'. Jesús dio su vida humana perfecta como rescate para recuperar lo que el perfecto Adán perdió." },
-            { difficulty: "medio", category: "1914", question: "¿Qué evento celestial importante ocurrió en 1914 según las profecías bíblicas?", options: ["El fin del mundo", "El comienzo del Armagedón", "Jesucristo fue entronizado como Rey del Reino de Dios", "Satanás fue creado"], correctIndex: 2, explanation: "En 1914 terminaron los Tiempos de los Gentiles y Jehová instaló a Jesucristo como Rey en los cielos, tras lo cual Satanás fue arrojado a la Tierra." },
-            { difficulty: "medio", category: "La 'Trinidad'", question: "¿Enseña la Biblia que Jehová, Jesús y el espíritu santo son un solo Dios?", options: ["Sí, es la doctrina central", "La Biblia es ambigua al respecto", "No, enseña que Jehová es el único Dios Todopoderoso y Jesús es su Hijo", "Solo enseña que Jehová y Jesús son iguales"], correctIndex: 2, explanation: "La Trinidad no es bíblica. La Biblia distingue claramente entre el Padre (Dios Todopoderoso), el Hijo (creado por Dios) y el espíritu santo (fuerza activa)." },
-            { difficulty: "medio", category: "Babilonia la Grande", question: "En el libro de Apocalipsis, ¿a qué representa 'Babilonia la Grande'?", options: ["A un imperio político mundial", "A la antigua ciudad reconstruida", "Al imperio mundial de la religión falsa", "A las Naciones Unidas"], correctIndex: 2, explanation: "Representa a todas las religiones falsas del mundo que se han prostituido con los reyes (gobiernos) de la tierra." },
-            { difficulty: "medio", category: "Cuerpo Gobernante", question: "¿A quiénes representa el 'esclavo fiel y prudente'?", options: ["A todos los cristianos verdaderos", "A los ancianos de todas las congregaciones", "A un pequeño grupo de ungidos que proporcionan alimento espiritual", "Al Papa"], correctIndex: 2, explanation: "Jesús designó a este pequeño grupo de hermanos ungidos (el Cuerpo Gobernante) para dirigir y alimentar espiritualmente a sus siervos." },
-            { difficulty: "medio", category: "Día de Jehová", question: "¿Qué es el 'Día de Jehová' o 'Día del Señor'?", options: ["El día domingo", "El momento de la muerte de cada persona", "El periodo en que Jehová ejecutará su sentencia contra este sistema malvado", "Un día de 24 horas literales en que Dios juzgará"], correctIndex: 2, explanation: "Se refiere al tiempo en que Jehová intervendrá de forma decisiva para eliminar la maldad y vindicar su soberanía." },
-            { difficulty: "medio", category: "El Bautismo", question: "¿Qué simboliza el bautismo en agua para un testigo de Jehová?", options: ["El perdón de los pecados", "La entrada a la iglesia", "La dedicación personal y total a Jehová para hacer su voluntad", "Un rito de paso a la madurez"], correctIndex: 2, explanation: "Es una demostración pública de que la persona le ha prometido a Dios en oración hacer su voluntad para siempre." },
+            //            // ================= NIVEL MEDIO =================
+            // Imágenes
+            { difficulty: "medio", category: "Personajes", image: "https://i.postimg.cc/SxBkDKwp/Zaqueo-(1).webp", question: "¿Quién es este personaje que quería ver a Jesús?", options: ["Mateo", "Zaqueo", "Bartimeo", "Nicodemo"], correctIndex: 1, explanation: "Zaqueo se subió a un sicómoro para ver a Jesús." },
+            { difficulty: "medio", category: "Personajes", image: "https://i.postimg.cc/MpCqdGhz/Timoteo-(1).webp", question: "¿De qué excelente compañero de Pablo hablamos?", options: ["Tito", "Bernabé", "Timoteo", "Marcos"], correctIndex: 2, explanation: "Timoteo fue enseñado desde su infancia en los escritos santos." },
+            { difficulty: "medio", category: "Personajes", image: "https://i.postimg.cc/Z5G4Vq1T/Rut-(1).webp", question: "¿Qué mujer moabita dijo 'tu pueblo será mi pueblo'?", options: ["Orpá", "Rut", "Raquel", "Rebeca"], correctIndex: 1, explanation: "Rut demostró amor leal hacia su suegra Noemí." },
+            { difficulty: "medio", category: "Cronología", image: "https://i.postimg.cc/0yTPcNL5/Decierto-(1).webp", question: "¿Qué evento representa este viaje en el desierto?", options: ["Viaje de Pablo", "Israel 40 años en desierto", "Exilio en Babilonia", "Huida a Egipto"], correctIndex: 1, explanation: "Vagaron 40 años debido a su falta de fe." },
+            { difficulty: "medio", category: "Profecías", image: "https://i.postimg.cc/LsjR7ppd/reino-de-mil-anos-(1).webp", question: "¿Qué periodo se representa aquí?", options: ["Gobernación de Satanás", "Destrucción de la Tierra", "El Milenio", "Los 144 mil en la tierra"], correctIndex: 2, explanation: "Cristo gobernará la Tierra por 1000 años." },
 
-            // Capciosas y Comprensión de Lectura (Medio)
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuántos reyes magos visitaron a Jesús en el pesebre la noche en que nació?", options: ["Tres reyes magos", "Dos reyes magos", "Doce reyes magos", "Ninguno"], correctIndex: 3, explanation: "Ninguno. La Biblia menciona astrólogos (no reyes), no especifica que fueran tres, y lo visitaron en una casa meses después, no en un pesebre." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿En qué libro de la Biblia se relata cuando el apóstol Pablo dividió el mar Rojo?", options: ["El libro de los Hechos", "Carta a los Romanos", "El libro de Éxodo", "En ninguno"], correctIndex: 3, explanation: "En ninguno. Fue Moisés quien, por el poder de Jehová, dividió el mar Rojo siglos antes de que Pablo naciera." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús nació el 25 de diciembre, ¿quiénes siguieron la estrella hasta Belén?", options: ["Los pastores de las ovejas", "Los astrólogos de Oriente", "Nadie, porque no nació en esa fecha", "Los ángeles del cielo"], correctIndex: 2, explanation: "Trampa. Jesús no nació el 25 de diciembre (fecha de invierno incompatible con los pastores a campo raso)." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta le cortó el cabello a Sansón mientras dormía?", options: ["El profeta Samuel", "El profeta Natán", "La profetisa Débora", "Ningún profeta"], correctIndex: 3, explanation: "Ningún profeta lo hizo. Dalila llamó a un hombre filisteo para que le cortara las trenzas mientras Sansón dormía." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuál de los 12 apóstoles traicionó a Jesús por 30 monedas de oro?", options: ["Judas Iscariote", "Pedro el apóstol", "Tomás el incrédulo", "Ninguno por oro"], correctIndex: 3, explanation: "Judas Iscariote lo traicionó, pero fue por 30 monedas de PLATA, no de oro." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús multiplicó los panes y los peces, ¿qué apóstol los había horneado?", options: ["Pedro", "Juan", "Mateo", "Ninguno"], correctIndex: 3, explanation: "Ninguno. Los cinco panes y dos pescaditos pertenecían a un muchachito que estaba en la multitud." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta hizo caer los muros de Jericó con explosivos?", options: ["El profeta Isaías", "El profeta Jeremías", "El líder Josué", "Ninguno"], correctIndex: 3, explanation: "Los muros cayeron milagrosamente por el poder de Dios en los días de Josué, tras marchar y tocar los cuernos, no con explosivos." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿En qué capítulo de Mateo explica Noé cómo hacer el arca?", options: ["Mateo 24", "Mateo 10", "Mateo 5", "En ninguno"], correctIndex: 3, explanation: "Las instrucciones del arca se dan en Génesis. Mateo es del Nuevo Testamento." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuántos años tenía Abrahán cuando fue arrojado al foso de los leones?", options: ["100 años", "85 años", "70 años", "Ninguno, no fue él"], correctIndex: 3, explanation: "El que fue arrojado al foso de los leones fue Daniel, no Abrahán." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Si un pez tragó a Jonás, ¿qué animal tragó al apóstol Pedro?", options: ["Una ballena", "Un tiburón", "Un cocodrilo", "Ninguno"], correctIndex: 3, explanation: "Pedro nunca fue tragado por ningún animal. Eso solo le ocurrió a Jonás." },
+            // Vida Cristiana y Doctrinas (Medio)
+            { difficulty: "medio", category: "Sangre", question: "¿Permite la Biblia el uso de fracciones menores de sangre?", options: ["Sí, siempre", "No, nunca", "Es asunto de conciencia personal", "Solo en urgencias"], correctIndex: 2, explanation: "Es una decisión de conciencia derivada de los componentes principales." },
+            { difficulty: "medio", category: "Rescate", question: "¿Qué precio se pagó exactamente para liberarnos del pecado?", options: ["El sufrimiento de Jesús", "La vida humana perfecta de Jesús", "Sangre de animales", "La bondad de Dios"], correctIndex: 1, explanation: "Jesús dio su vida humana perfecta, equivalente a lo que Adán perdió." },
+            { difficulty: "medio", category: "Cronología", question: "¿Qué evento celestial ocurrió en 1914?", options: ["El fin del mundo", "Cristo entronizado como Rey", "Armagedón", "Caída de Babilonia"], correctIndex: 1, explanation: "Terminaron los Tiempos de los Gentiles y Cristo empezó a reinar." },
+            { difficulty: "medio", category: "Trinidad", question: "¿Enseña la Biblia la Trinidad?", options: ["Sí", "Es ambigua", "No, Jehová es el único Todopoderoso", "Sí, 3 en 1"], correctIndex: 2, explanation: "La Biblia distingue claramente al Padre (Todopoderoso) del Hijo." },
+            { difficulty: "medio", category: "Profecías", question: "En Apocalipsis, ¿qué es 'Babilonia la Grande'?", options: ["Un imperio político", "Ciudad de Irak", "El imperio de la religión falsa", "La ONU"], correctIndex: 2, explanation: "Representa a todas las religiones falsas del mundo." },
+            { difficulty: "medio", category: "Organización", question: "¿A quién representa el 'esclavo fiel y prudente'?", options: ["A todos los cristianos", "A los ancianos locales", "A un pequeño grupo de ungidos", "A los ángeles"], correctIndex: 2, explanation: "Este grupo (el Cuerpo Gobernante) proporciona el alimento espiritual." },
+            { difficulty: "medio", category: "Día de Jehová", question: "¿Qué es el 'Día de Jehová'?", options: ["El Domingo", "La muerte", "Periodo de juicio y ejecución divina", "24 horas literales"], correctIndex: 2, explanation: "Tiempo en que Dios eliminará la maldad y vindicará su nombre." },
+            { difficulty: "medio", category: "Bautismo", question: "¿Qué simboliza el bautismo en agua?", options: ["Perdón de pecados", "Entrar a una iglesia", "Dedicación personal a Jehová", "Madurez"], correctIndex: 2, explanation: "Es una demostración pública de haberse dedicado a hacer la voluntad de Dios." },
+            { difficulty: "medio", category: "Empleo", question: "¿Estaría bien trabajar pintando un cuartel militar?", options: ["Nunca", "Es decisión de conciencia personal evaluando neutralidad", "Sí, si no usa armas", "No, es gobierno"], correctIndex: 1, explanation: "Debe evaluar si el trabajo apoya un propósito contrario a los principios bíblicos." },
+            { difficulty: "medio", category: "Celebraciones", question: "¿Por qué un Testigo podría rechazar un 'brindis'?", options: ["Alcohol prohibido", "Tiene origen en ofrendas paganas a dioses", "Es costoso", "No le gusta el vino"], correctIndex: 1, explanation: "El choque de copas se remonta a ritos paganos para pedir deseos a los dioses." },
 
-            // ================= NIVEL DIFÍCIL =================
-            // Con Imágenes
-            { difficulty: "dificil", category: "Profecías", image: "https://i.postimg.cc/FK0mq44N/70-semanas.webp", question: "¿Qué evento principal anunciaba esta profecía de Daniel 9?", options: ["La caída de Babilonia", "La aparición y muerte del Mesías", "El inicio del reinado de 1000 años", "La destrucción de Jerusalén en 70 e.c."], correctIndex: 1, explanation: "La profecía de las 70 semanas señalaba el tiempo exacto de la llegada del Mesías en el año 29 e.c. y su muerte posterior." },
-            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xdLY7229/Nabucodonosor.webp", question: "¿Qué rey de Babilonia tuvo el sueño profético de la enorme estatua?", options: ["Belsasar", "Ciro", "Nabucodonosor", "Darío"], correctIndex: 2, explanation: "El rey Nabucodonosor soñó con una inmensa estatua de diferentes metales que representaba la sucesión de potencias mundiales." },
-            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/cJfZjSSs/Jezabel.webp", question: "¿Quién fue esta malvada reina de Israel?", options: ["Atalía", "Jezabel", "Salomé", "Ester"], correctIndex: 1, explanation: "Jezabel fue una perversa reina, esposa de Acab, que persiguió a los profetas de Jehová y promovió la adoración a Baal." },
-            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/yN0B5HHY/Ciro.webp", question: "¿Qué rey persa fue predicho por nombre por Isaías casi 200 años antes?", options: ["Darío el medo", "Artajerjes", "Jerjes", "Ciro el Grande"], correctIndex: 3, explanation: "El profeta Isaías predijo por nombre que Ciro conquistaría Babilonia y liberaría a los judíos, detallando cómo secaría el río y abriría las puertas." },
-            
-            // Creencias Profundas y Excepciones
-            { difficulty: "dificil", category: "Neutralidad Laboral", question: "¿Estaría bien que un Testigo trabaje pintando un cuartel militar?", options: ["Nunca, está prohibido", "Es una decisión de conciencia personal evaluando si apoya directamente la guerra", "Sí, siempre y cuando no porte armas", "No, porque ganaría dinero del gobierno"], correctIndex: 1, explanation: "El cristiano debe evaluar con su conciencia si el trabajo en sí mismo apoya un propósito contrario a los principios bíblicos o si ofenderá a otros." },
-            { difficulty: "dificil", category: "Brindis", question: "Un Testigo asiste a una boda donde se propone un 'brindis'. ¿Por qué podría optar por no participar?", options: ["Porque el alcohol está prohibido", "Porque los brindis tienen su origen en ofrendas a dioses falsos para pedir bendición", "Porque es un gasto innecesario", "Porque no le gusta el sabor del vino"], correctIndex: 1, explanation: "El choque de copas y los brindis se remontan a ritos paganos donde se ofrecía líquido a los dioses a cambio de un deseo." },
-            { difficulty: "dificil", category: "La Gran Tribulación", question: "¿Con qué evento dramático comenzará la 'gran tribulación'?", options: ["Con el Armagedón", "Con un terremoto global", "Con el ataque y destrucción de 'Babilonia la Grande' por los poderes políticos", "Con la aparición del Anticristo"], correctIndex: 2, explanation: "Según Apocalipsis, los gobiernos políticos (la bestia) se volverán contra la religión falsa y la destruirán." },
-            { difficulty: "dificil", category: "Los 144.000", question: "¿Qué función específica tendrán los 144.000 en el cielo?", options: ["Serán solo ángeles mensajeros", "Serán 'reyes y sacerdotes' que gobernarán sobre la tierra", "Serán los jueces de los ángeles caídos", "Se encargarán de escribir nuevos rollos"], correctIndex: 1, explanation: "Apocalipsis 5:10 dice que Cristo los hizo reyes y sacerdotes, y reinarán sobre la tierra." },
-            { difficulty: "dificil", category: "Cronología Profética", question: "¿Qué profecía nos da la clave para llegar al año 1914?", options: ["Las 70 semanas (Daniel 9)", "La profecía de los 'siete tiempos' y el árbol cortado (Daniel 4)", "El rey del norte y el rey del sur", "La estatua de Nabucodonosor"], correctIndex: 1, explanation: "Los siete tiempos equivalen a 2.520 años, que comenzaron en 607 a.e.c. y terminaron en 1914 e.c." },
-            { difficulty: "dificil", category: "Justicia Divina", question: "Si Dios es amor, ¿por qué ordenó la aniquilación de naciones como los cananeos?", options: ["El Dios del Antiguo Testamento era más severo", "Porque practicaban atrocidades y Dios ejecutó su juicio justo tras darles tiempo", "Porque los israelitas necesitaban la tierra a toda costa", "Es una alegoría, nunca ocurrió"], correctIndex: 1, explanation: "Jehová es perfecto en justicia; juzgó a los cananeos por sus prácticas repugnantes como quemar niños, protegiendo así a su pueblo." },
-            { difficulty: "dificil", category: "Empleo y Conciencia", question: "El jefe de un hermano le da un bono en diciembre. Sabe que la empresa lo da por la Navidad. ¿Debe devolverlo?", options: ["Sí, para no participar en nada de Navidad", "Es decisión personal; puede verlo como recompensa por su buen trabajo si no compromete su conciencia", "Sí, y debe explicar por qué", "No, pero debe donarlo íntegramente"], correctIndex: 1, explanation: "Si no se le exige participar en un acto religioso, el cristiano puede decidir con su conciencia si lo acepta como pago por su labor." },
-            { difficulty: "dificil", category: "Disciplina", question: "¿A qué edad considera la Biblia que un joven Testigo está 'listo' para bautizarse?", options: ["A los 12 años", "Al alcanzar los 18 años", "La Biblia no establece una edad específica; depende del conocimiento y la madurez", "Cuando sus padres lo decidan"], correctIndex: 2, explanation: "El bautismo es un paso de dedicación personal consciente, no ligado a una edad cronológica obligatoria." },
+            // Capciosas / Comprensión Lectora (Medio)
+            { difficulty: "medio", category: "Capciosa", question: "¿Cuántos reyes magos visitaron a Jesús en el pesebre?", options: ["Tres", "Dos", "Doce", "Ninguno"], correctIndex: 3, explanation: "Eran astrólogos (no reyes), no se dice que fueran tres, y lo visitaron en una casa, no en pesebre." },
+            { difficulty: "medio", category: "Capciosa", question: "¿En qué libro se relata cuando Pablo dividió el mar Rojo?", options: ["Hechos", "Romanos", "Éxodo", "En ninguno"], correctIndex: 3, explanation: "Fue Moisés quien dividió el mar Rojo, siglos antes de Pablo." },
+            { difficulty: "medio", category: "Capciosa", question: "Cuando Jesús nació el 25 de diciembre, ¿quién siguió la estrella?", options: ["Pastores", "Astrólogos", "Nadie, no nació en esa fecha", "Ángeles"], correctIndex: 2, explanation: "Jesús no nació el 25 de diciembre; los rebaños no estarían a campo raso en el frío invierno." },
+            { difficulty: "medio", category: "Capciosa", question: "¿Qué profeta le cortó el cabello a Sansón?", options: ["Samuel", "Natán", "Débora", "Ningún profeta"], correctIndex: 3, explanation: "Ningún profeta lo hizo. Dalila llamó a un hombre filisteo para cortarlo." },
+            { difficulty: "medio", category: "Capciosa", question: "¿A qué apóstol horneó los panes que Jesús multiplicó?", options: ["Pedro", "Juan", "Mateo", "Ninguno"], correctIndex: 3, explanation: "Los panes pertenecían a un muchachito de la multitud." },
+            { difficulty: "medio", category: "Capciosa", question: "¿Qué profeta hizo caer Jericó con explosivos?", options: ["Isaías", "Jeremías", "Josué", "Ninguno"], correctIndex: 3, explanation: "Cayeron milagrosamente por el poder de Dios, no con explosivos." },
+            { difficulty: "medio", category: "Capciosa", question: "¿En qué capítulo de Mateo se explica cómo construir el arca?", options: ["Mateo 24", "Mateo 10", "Mateo 5", "En ninguno"], correctIndex: 3, explanation: "Las instrucciones están en Génesis, en el Antiguo Testamento." },
+            { difficulty: "medio", category: "Capciosa", question: "¿Cuántos años tenía Abrahán cuando lo arrojaron a los leones?", options: ["100", "85", "70", "Ninguno, no fue él"], correctIndex: 3, explanation: "Fue Daniel quien fue arrojado al foso de los leones." },
+            { difficulty: "medio", category: "Capciosa", question: "Si un pez tragó a Jonás, ¿qué animal tragó a Pedro?", options: ["Ballena", "Tiburón", "Cocodrilo", "Ninguno"], correctIndex: 3, explanation: "Pedro nunca fue tragado por ningún animal." },
+            { difficulty: "medio", category: "Capciosa", question: "¿Por qué el profeta Samuel le dijo a David que pecó con Bat-Seba?", options: ["Era estricto", "Dios lo mandó", "Por la ovejita", "Fue Natán, no Samuel"], correctIndex: 3, explanation: "Fue el profeta Natán quien lo confrontó, no Samuel." },
 
-            // Capciosas y Comprensión de Lectura (Difícil)
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un hermano necesita una operación y su vida corre riesgo, ¿qué excepción le permite la Biblia para aceptar una transfusión?", options: ["Si luego confiesa a los ancianos", "La Biblia NO permite NINGUNA excepción para el uso indebido de sangre, incluso en emergencias", "Si es sangre de un familiar cercano", "Si usa su propia sangre almacenada previamente"], correctIndex: 1, explanation: "En Hechos 15:28, 29, el mandato de 'abstenerse de sangre' es absoluto y no incluye cláusulas de excepción para emergencias médicas." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "El Reinado de 1000 años terminará. Cuando la humanidad sea perfecta, ¿qué sucederá con Satanás?", options: ["Será destruido inmediatamente", "Se le dará una segunda oportunidad", "Será soltado de su prisión por 'un poco de tiempo' para una prueba final", "Gobernará una parte de la tierra"], correctIndex: 2, explanation: "Apocalipsis 20:7, 8 indica que será liberado brevemente para una prueba decisiva final antes de su destrucción eterna." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Jesús dijo: 'El que ejerce fe en mí, llegará a vivir'. ¿Significa esto que Moisés y Abrahán irán al cielo?", options: ["Sí, todos los siervos fieles van al cielo", "No, la esperanza celestial se reveló después; los siervos antiguos resucitarán en la Tierra", "Sí, tras una purificación", "No, ellos ya reencarnaron"], correctIndex: 1, explanation: "Personajes pre-cristianos como Juan el Bautista o David no fueron al cielo (Hechos 2:34). Su recompensa es terrenal." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un miembro bautizado comete un pecado grave, confiesa su error a los ancianos, demuestra un arrepentimiento genuino profundo y cambia su actitud, ¿qué medida se toma?", options: ["Es sacado de la congregación automáticamente porque el pecado es grave", "No es sacado de la congregación; el arrepentimiento permite que se le ayude con disciplina y restricciones", "Depende de cuántas veces haya pecado en toda su vida", "Es sacado de la congregación para dar el ejemplo"], correctIndex: 1, explanation: "Sacar a alguien de la congregación es la medida final para quienes NO se arrepienten. Si hay verdadero arrepentimiento, se le brinda ayuda." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un hermano dice: 'He orado mucho al espíritu santo para que me dé fuerzas', ¿qué corrección bíblica aplica?", options: ["Debe orar con más fe", "El espíritu santo es la fuerza de Dios, no una persona; se debe orar a Jehová para pedir su espíritu", "Debe orarle a Jesucristo", "Ninguna, es correcto"], correctIndex: 1, explanation: "El espíritu santo es el poder de Dios en acción. No se le debe dirigir oraciones, sino pedirlo al Padre en el nombre de Jesús." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si una persona es sacada de la congregación cristiana (expulsada), ¿se le prohíbe asistir a las reuniones en el Salón del Reino?", options: ["Sí, se le prohíbe la entrada", "No, se le permite y anima a asistir para que escuche instrucción bíblica que le ayude a arrepentirse", "Solo puede asistir a asambleas grandes", "Sí, y puede participar comentando"], correctIndex: 1, explanation: "Asistir a las reuniones es vital para su recuperación espiritual, aunque los hermanos no socializan con la persona." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Quién era el emperador romano cuando Jehová envió las 10 plagas sobre Egipto?", options: ["César Augusto", "Nerón", "Tiberio César", "No existía ningún emperador romano en esa época"], correctIndex: 3, explanation: "Las plagas ocurrieron siglos antes de que el Imperio Romano y sus emperadores existieran." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿En qué libro encontramos la historia de los apóstoles Sadrac, Mesac y Abednego?", options: ["Hechos de los Apóstoles", "El libro de Daniel", "El libro de Apocalipsis", "En ninguno, porque no eran apóstoles"], correctIndex: 3, explanation: "Eran jóvenes hebreos fieles en Babilonia. Su historia está en Daniel, pero NO eran apóstoles de Jesús." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Cuál es la profecía de Juan el Bautista sobre el Armagedón en su libro de Apocalipsis?", options: ["La bestia salvaje de 7 cabezas", "El sellado de los 144,000", "El descenso de la nueva Jerusalén", "Él no escribió el libro de Apocalipsis"], correctIndex: 3, explanation: "El libro de Apocalipsis fue escrito por el apóstol Juan, no por Juan el Bautista (quien había sido ejecutado años antes)." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Por qué el profeta Samuel le dijo al rey David que había pecado con Bat-Seba?", options: ["Porque Samuel era muy estricto", "Porque Jehová se lo ordenó a Samuel", "Por la ovejita del hombre pobre", "La pregunta tiene un error, fue el profeta Natán, no Samuel"], correctIndex: 3, explanation: "Fue el profeta Natán quien confrontó a David con la ilustración de la ovejita, no Samuel." }
+            //            // ================= NIVEL DIFÍCIL =================
+            // Imágenes
+            { difficulty: "dificil", category: "Profecías", image: "https://i.postimg.cc/FK0mq44N/70-semanas.webp", question: "¿Qué anunciaba la profecía de Daniel 9?", options: ["Caída de Babilonia", "Aparición del Mesías", "Armagedón", "Destrucción de Jerusalén 70 e.c."], correctIndex: 1, explanation: "Señalaba el tiempo exacto de la llegada del Mesías en el 29 e.c." },
+            { difficulty: "dificil", category: "Personajes", image: "https://i.postimg.cc/xdLY7229/Nabucodonosor.webp", question: "¿Qué rey tuvo el sueño de la enorme estatua?", options: ["Belsasar", "Ciro", "Nabucodonosor", "Darío"], correctIndex: 2, explanation: "Rey de Babilonia que soñó con la estatua de metales." },
+            { difficulty: "dificil", category: "Personajes", image: "https://i.postimg.cc/cJfZjSSs/Jezabel.webp", question: "¿Quién fue esta malvada reina de Israel?", options: ["Atalía", "Jezabel", "Salomé", "Ester"], correctIndex: 1, explanation: "Jezabel promovió la adoración a Baal y persiguió a los profetas." },
+            { difficulty: "dificil", category: "Personajes", image: "https://i.postimg.cc/yN0B5HHY/Ciro.webp", question: "¿Qué rey persa fue predicho por nombre por Isaías?", options: ["Darío", "Artajerjes", "Jerjes", "Ciro el Grande"], correctIndex: 3, explanation: "Isaías predijo que Ciro conquistaría Babilonia casi 200 años antes." },
+
+            // Vida Cristiana Profunda y Disciplina (Difícil)
+            { difficulty: "dificil", category: "Tribulación", question: "¿Con qué evento comienza la 'gran tribulación'?", options: ["Armagedón", "Terremoto global", "Destrucción de Babilonia la Grande", "Aparición del Anticristo"], correctIndex: 2, explanation: "Los gobiernos políticos se volverán contra la religión falsa." },
+            { difficulty: "dificil", category: "Esperanza", question: "¿Qué función tendrán los 144.000 en el cielo?", options: ["Solo ángeles mensajeros", "Reyes y sacerdotes", "Jueces de ángeles", "Escribas divinos"], correctIndex: 1, explanation: "Reinarán sobre la tierra junto a Cristo." },
+            { difficulty: "dificil", category: "Cronología", question: "¿Qué profecía da la clave para llegar a 1914?", options: ["Las 70 semanas", "Los siete tiempos de Daniel 4", "Rey del norte y sur", "Estatua de oro"], correctIndex: 1, explanation: "Los siete tiempos (2.520 años) que terminaron en 1914." },
+            { difficulty: "dificil", category: "Empleo", question: "Si en diciembre la empresa da un bono por Navidad, ¿debe un Testigo devolverlo?", options: ["Sí, siempre", "Es decisión personal si no exige un acto religioso", "Sí, y dar explicaciones", "Debe donarlo todo"], correctIndex: 1, explanation: "Puede verse como un pago por su labor anual si no compromete su conciencia." },
+            { difficulty: "dificil", category: "Bautismo", question: "¿A qué edad debe un joven Testigo bautizarse?", options: ["A los 12", "A los 18", "No hay edad, depende de su fe y madurez", "Cuando sus padres digan"], correctIndex: 2, explanation: "Es un paso de dedicación personal, no ligado a una edad cronológica." },
+            { difficulty: "dificil", category: "Gran Muchedumbre", question: "Según Apocalipsis 7:9, ¿quiénes componen la 'gran muchedumbre'?", options: ["Los ungidos", "Ángeles", "Innumerables sobrevivientes para vivir en la Tierra", "Los resucitados"], correctIndex: 2, explanation: "Sobrevivirán a la gran tribulación para heredar la tierra." },
+            { difficulty: "dificil", category: "Armagedón", question: "¿Qué es el Armagedón?", options: ["Guerra nuclear", "Desastre ecológico", "La guerra de Dios para eliminar la maldad", "Conflicto interno"], correctIndex: 2, explanation: "Dios intervendrá para eliminar los gobiernos humanos y limpiar la Tierra." },
+            { difficulty: "dificil", category: "Excepciones", question: "Si un hermano necesita cirugía urgente y su vida peligra, ¿se permite una transfusión?", options: ["Sí, luego lo confiesa", "La Biblia no permite ninguna excepción para la sangre", "Sí, si es de familia", "Autotransfusión"], correctIndex: 1, explanation: "El mandato de 'abstenerse de sangre' es absoluto." },
+            { difficulty: "dificil", category: "Disciplina", question: "Si un pecador confiesa y se arrepiente profundamente, ¿es sacado de la congregación?", options: ["Sí, automáticamente", "No, se le ayuda con disciplina y restricciones", "Depende de la cantidad de veces", "Sí, para dar el ejemplo"], correctIndex: 1, explanation: "Sacar a alguien es la medida final para quienes NO se arrepienten." },
+            { difficulty: "dificil", category: "Disciplina", question: "Si una persona es sacada de la congregación, ¿se le prohíbe ir al Salón del Reino?", options: ["Sí, prohibido", "No, se le permite y anima a asistir para escuchar", "Solo asambleas", "Sí, y puede comentar"], correctIndex: 1, explanation: "Se le permite asistir para que escuche instrucción que le ayude a regresar." },
+
+            // Capciosas / Comprensión Lectora Profunda (Difícil)
+            { difficulty: "dificil", category: "Capciosa", question: "Cuando la humanidad sea perfecta en el Milenio, ¿qué pasará con Satanás?", options: ["Destruido al inicio", "Segunda oportunidad", "Será soltado por un poco de tiempo para una prueba", "Gobernará Marte"], correctIndex: 2, explanation: "Será liberado del abismo para una prueba final." },
+            { difficulty: "dificil", category: "Capciosa", question: "Jesús dijo: 'El que ejerce fe llegará a vivir'. ¿Moisés irá al cielo?", options: ["Sí, todos los fieles van", "No, los siervos de la antigüedad resucitarán en la Tierra", "Sí, tras purificarse", "Ya reencarnó"], correctIndex: 1, explanation: "La esperanza celestial se reveló tras la muerte de Jesús." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿En qué texto ora Jesús al espíritu santo para pedir fuerzas?", options: ["Lucas", "Marcos", "Juan", "Nunca oró al espíritu santo"], correctIndex: 3, explanation: "El espíritu santo es la fuerza activa, no se le ora. Jesús oraba al Padre." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿Qué emperador romano vio las 10 plagas de Egipto?", options: ["César Augusto", "Nerón", "Tiberio", "No existía el imperio romano entonces"], correctIndex: 3, explanation: "Las plagas ocurrieron milenios antes del Imperio Romano." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿En qué libro Juan el Bautista escribe sobre el Armagedón?", options: ["Apocalipsis", "Hechos", "Lucas", "Él no escribió Apocalipsis"], correctIndex: 3, explanation: "Apocalipsis fue escrito por el apóstol Juan, no por el Bautista." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿A qué apóstol arrojaron al horno de fuego ardiente?", options: ["Pedro", "Pablo", "Juan", "Eran 3 jóvenes hebreos, no apóstoles"], correctIndex: 3, explanation: "Fueron Sadrac, Mesac y Abednego, siglos antes de los apóstoles." },
+            { difficulty: "dificil", category: "Capciosa", question: "Si un Testigo rechaza el plasma, pero le ofrecen Albúmina (fracción), ¿qué hace?", options: ["Rechazarla obligatoriamente", "Aceptarla obligatoriamente", "Decisión de conciencia personal", "Preguntar al Cuerpo Gobernante"], correctIndex: 2, explanation: "Las fracciones sanguíneas no están prohibidas expresamente; es decisión personal." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿Por qué ordenó Dios la muerte de niños cananeos?", options: ["Era más cruel en el A.T.", "Por justicia: practicaban aberraciones y no cambiaron", "Necesitaban la tierra", "Es una fábula"], correctIndex: 1, explanation: "Dios ejecutó juicio justo para proteger su propósito y limpiar aberraciones." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿Qué función cumplía Jesús antes de venir a la tierra?", options: ["Ángel guardián", "Obrero experto y la Palabra", "Dios manifestado en espíritu", "No existía"], correctIndex: 1, explanation: "Ayudó a crear todo y era el portavoz de Dios." },
+            { difficulty: "dificil", category: "Capciosa", question: "¿Cuándo fueron expulsados del cielo los demonios a la Tierra?", options: ["En el Edén", "Al morir Jesús", "Poco después de 1914", "Aún no han sido expulsados"], correctIndex: 2, explanation: "Hubo una guerra en el cielo tras la entronización de Cristo en 1914." }
         ];
 
         let currentLevel = '';
@@ -429,21 +420,22 @@
         let isAnsweredFinal = false; 
         
         let timerInterval;
-        let timeLeft = 30; // Tiempo extendido a 30 segundos
+        let timeLeft = 30; // Tiempo en 30 segundos manual
 
         // Memoria Global Anti-Repetición
         let playedQuestionsIds = { facil: [], medio: [], dificil: [] };
         let turnDirection = 1; 
 
+        // Botones Selección Equipos
         const btnTeamSels = document.querySelectorAll('.team-sel-btn');
         btnTeamSels.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 btnTeamSels.forEach(b => {
                     b.classList.remove('team-active');
-                    b.style.backgroundColor = '#334155'; // bg-slate-700 fallback
+                    b.style.backgroundColor = '#334155';
                 });
                 e.target.classList.add('team-active');
-                e.target.style.backgroundColor = '#1e293b'; // highlight
+                e.target.style.backgroundColor = '#1e293b'; 
                 numTeams = parseInt(e.target.dataset.teams);
             });
         });
@@ -451,12 +443,11 @@
         function initGame(difficulty) {
             currentLevel = difficulty;
             
-            // Asignar IDs a las preguntas si no los tienen para poder trackearlas en memoria
+            // Asignar IDs si no tienen
             if(!questionsDB[0].id) {
                 questionsDB.forEach((q, idx) => q.id = idx);
             }
 
-            // Inicializar equipos
             teams = [];
             for(let i=0; i<numTeams; i++) {
                 teams.push({ score: 0, perks: [], skipNextTurn: false, name: `Eq. ${i+1}` });
@@ -476,32 +467,25 @@
 
         function loadQuestionsForLevel(difficulty) {
             let filtered = questionsDB.filter(q => q.difficulty === difficulty);
-            
-            // Filtrar las que NO se han jugado en el historial (Memoria)
             let available = filtered.filter(q => !playedQuestionsIds[difficulty].includes(q.id));
 
-            // Si quedan menos de 20 preguntas sin jugar, reiniciamos la memoria para que el juego nunca se rompa
             if (available.length < 20) {
                 if(playedQuestionsIds[difficulty].length > 0) {
                     showToast("¡Memoria reiniciada! Se han añadido preguntas nuevas.");
                     playedQuestionsIds[difficulty] = [];
                     available = filtered; 
                 } else {
-                    // Fallback si la DB tiene menos de 20 en total
                     available = filtered;
                 }
             }
 
-            // Shuffle (Fisher-Yates) matemáticamente perfecto para aleatorizar el array
+            // Algoritmo Fisher-Yates perfecto
             for (let i = available.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [available[i], available[j]] = [available[j], available[i]];
             }
             
-            // Extraer las preguntas para esta ronda (ej. 20)
             gameQuestions = available.slice(0, 20);
-            
-            // Guardar IDs en memoria para la próxima ronda o revancha
             gameQuestions.forEach(q => playedQuestionsIds[difficulty].push(q.id));
             currentQuestionIndex = 0;
         }
@@ -514,7 +498,6 @@
                 const isActive = (index === currentTeamTurn) ? 'team-active' : 'opacity-60 bg-slate-800';
                 const turnIndicator = (index === currentTeamTurn) ? '<span class="text-[10px] uppercase font-bold text-yellow-400 block mb-1 tracking-wider">Turno Activo</span>' : '';
                 
-                // Botones de Poderes
                 let perksHTML = '';
                 if(team.perks.length > 0) {
                     perksHTML = '<div class="mt-2 flex gap-1 justify-center">';
@@ -547,7 +530,6 @@
             isAnsweredFinal = false;
             teamsTriedCurrentQuestion = [];
 
-            // Limpiar skip de turno si el equipo actual estaba saltado
             if(teams[currentTeamTurn].skipNextTurn) {
                 teams[currentTeamTurn].skipNextTurn = false;
                 advanceTurnSubRound();
@@ -560,7 +542,6 @@
             document.getElementById('category-badge').innerText = q.category;
             document.getElementById('question-text').innerText = q.question;
             
-            // Cargar Imagen si existe
             const imgContainer = document.getElementById('image-container');
             const imgElem = document.getElementById('question-image');
             if (q.image) {
@@ -570,7 +551,6 @@
                 imgContainer.classList.add('hidden');
             }
 
-            // Opciones
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
             
@@ -578,7 +558,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-option w-full p-4 md:p-5 rounded-2xl bg-slate-800 border border-slate-600 font-semibold text-base md:text-lg hover:bg-slate-700 text-left text-slate-200 shadow-md';
                 btn.innerText = opt;
-                btn.disabled = true; // Bloqueado hasta iniciar el tiempo
+                btn.disabled = true; // Bloqueado hasta Iniciar Tiempo
                 btn.onclick = () => processTurnResult(index === q.correctIndex, btn, index);
                 optionsContainer.appendChild(btn);
             });
@@ -587,7 +567,6 @@
             
             renderTeamsUI();
             
-            // Preparar temporizador pero NO iniciarlo automáticamente
             clearInterval(timerInterval);
             timeLeft = 30;
             document.getElementById('time-text').innerText = `${timeLeft}s`;
@@ -597,14 +576,12 @@
             timerBar.classList.remove('timer-warning');
             document.getElementById('time-text').classList.remove('text-red-400');
             
-            // Mostrar botón para iniciar el tiempo
             document.getElementById('start-timer-btn').classList.remove('hidden');
         }
 
         function startTimer() {
             document.getElementById('start-timer-btn').classList.add('hidden');
             
-            // Desbloquear botones de opciones que no hayan sido fallados
             const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => {
                 if(!b.classList.contains('incorrect')) b.disabled = false;
@@ -617,7 +594,7 @@
             const timerBar = document.getElementById('timer-bar');
             timerBar.style.transition = 'none';
             timerBar.style.width = '100%';
-            void timerBar.offsetWidth; // Reflow
+            void timerBar.offsetWidth;
             timerBar.style.transition = 'width 1s linear, background-color 0.3s';
 
             timerInterval = setInterval(() => {
@@ -656,19 +633,16 @@
             buttons.forEach(b => b.disabled = true); 
 
             if (isCorrect) {
-                // ACIERTO (1 Punto)
                 isAnsweredFinal = true;
                 if(buttonElem) buttonElem.classList.add('correct');
                 
                 teams[currentTeamTurn].score += 1;
                 renderTeamsUI();
                 
-                // Chequear Logro a los 10 puntos
                 if(teams[currentTeamTurn].score === 10) {
                     showCelebration(teams[currentTeamTurn].name);
                 }
 
-                // Dar premio (Perk) cada 5 puntos
                 if(teams[currentTeamTurn].score > 0 && teams[currentTeamTurn].score % 5 === 0 && numTeams > 1) {
                     awardPerk(currentTeamTurn);
                 }
@@ -676,26 +650,22 @@
                 showExplanation();
                 
             } else {
-                // ERROR
                 if(buttonElem) buttonElem.classList.add('incorrect');
                 
                 if (numTeams > 1 && teamsTriedCurrentQuestion.length < numTeams) {
-                    // Robo disponible
                     showToast(`¡Incorrecto! Turno de robo para el siguiente equipo 🔄`);
                     setTimeout(() => {
                         advanceTurnSubRound();
                     }, 1500);
                 } else {
-                    // Todos fallaron o solo hay 1 equipo
                     isAnsweredFinal = true;
-                    buttons[q.correctIndex].classList.add('correct'); // Mostrar la correcta
+                    buttons[q.correctIndex].classList.add('correct');
                     showExplanation();
                 }
             }
         }
 
         function advanceTurnSubRound() {
-            // Avanza el turno respetando la dirección (por si se usó el perk Reversa)
             currentTeamTurn = (currentTeamTurn + turnDirection + numTeams) % numTeams;
             
             if(teams[currentTeamTurn].skipNextTurn) {
@@ -716,7 +686,7 @@
 
             renderTeamsUI();
             
-            // Preparar el temporizador para el equipo que roba, esperando a que den clic
+            // Restablece para el equipo que roba
             clearInterval(timerInterval);
             timeLeft = 30;
             document.getElementById('time-text').innerText = `${timeLeft}s`;
@@ -726,17 +696,15 @@
             timerBar.classList.remove('timer-warning');
             document.getElementById('time-text').classList.remove('text-red-400');
             
-            // Mostrar botón y mantener opciones bloqueadas
             document.getElementById('start-timer-btn').classList.remove('hidden');
             const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => b.disabled = true);
         }
 
         function nextTurn() {
-            // Siguiente Pregunta: Rota quién inicia para mantener equidad
             startingTeamForRound = (startingTeamForRound + 1) % numTeams;
             currentTeamTurn = startingTeamForRound;
-            turnDirection = 1; // Reinicia reversa cada ronda nueva
+            turnDirection = 1; 
             currentQuestionIndex++;
             loadQuestion();
         }
@@ -755,17 +723,16 @@
             }
         }
 
-        // Sistema de Perks (Poderes)
         function awardPerk(teamIndex) {
             const availablePerks = [
-                { type: 'reversa', name: 'Reversa', icon: '🔄', desc: 'Invierte el orden de los turnos' },
-                { type: 'salto', name: 'Salto', icon: '⏭️', desc: 'Salta el turno del siguiente equipo' },
-                { type: 'penalizacion', name: 'Roba 1 Punto', icon: '⚡', desc: 'Resta 1 punto al siguiente equipo' }
+                { type: 'reversa', name: 'Reversa', icon: '🔄', desc: 'Invierte orden turnos' },
+                { type: 'salto', name: 'Salto', icon: '⏭️', desc: 'Salta al siguiente' },
+                { type: 'penalizacion', name: 'Roba 1 Punto', icon: '⚡', desc: 'Resta 1 punto' }
             ];
             const randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
             
             teams[teamIndex].perks.push(randomPerk);
-            showToast(`¡Bono especial! ${teams[teamIndex].name} ganó: ${randomPerk.name} ${randomPerk.icon}`);
+            showToast(`¡Bono! ${teams[teamIndex].name} ganó: ${randomPerk.name} ${randomPerk.icon}`);
             renderTeamsUI();
         }
 
@@ -782,7 +749,7 @@
                 showToast(`¡${team.name} usó Salto! ${teams[next].name} perderá su turno ⏭️.`);
             } else if (perk.type === 'penalizacion') {
                 let next = (currentTeamTurn + turnDirection + numTeams) % numTeams;
-                if(teams[next].score > 0) teams[next].score -= 1; // Evita puntajes negativos
+                if(teams[next].score > 0) teams[next].score -= 1; 
                 showToast(`¡${team.name} le restó 1 punto a ${teams[next].name} ⚡!`);
             }
 
@@ -801,7 +768,6 @@
             document.getElementById('celeb-team-name').innerText = `¡${teamName} ha alcanzado 10 puntos!`;
             document.getElementById('celebration-modal').style.display = 'flex';
             
-            // Generador de Confeti
             const modal = document.getElementById('celebration-modal');
             for(let i=0; i<60; i++) {
                 const conf = document.createElement('div');
@@ -849,7 +815,7 @@
         function playAgainSameLevel() {
             document.getElementById('results-screen').classList.add('hidden');
             document.getElementById('results-screen').classList.remove('flex');
-            initGame(currentLevel); // Llama la lógica de memoria y elige nuevas preguntas al azar
+            initGame(currentLevel); 
         }
 
         function returnToHome() {

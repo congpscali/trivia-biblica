@@ -7,15 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #0f172a; /* Tailwind slate-900 */
-            color: #f8fafc; /* Tailwind slate-50 */
+            background-color: #0f172a; 
+            color: #f8fafc; 
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7); /* Tailwind slate-800 con opacidad */
-            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
@@ -26,19 +28,19 @@
 
         .btn-option:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            background-color: #334155; /* Tailwind slate-700 */
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.3);
+            background-color: #334155; 
         }
 
         .correct {
-            background-color: #10b981 !important; /* Verde esmeralda */
+            background-color: #10b981 !important; 
             color: white;
             border-color: #059669;
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
         }
 
         .incorrect {
-            background-color: #ef4444 !important; /* Rojo */
+            background-color: #ef4444 !important; 
             color: white;
             border-color: #b91c1c;
         }
@@ -54,17 +56,17 @@
 
         .timer-bar {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Azul */
+            background: linear-gradient(90deg, #3b82f6, #0284c7);
             width: 100%;
             transition: width 1s linear, background-color 0.3s;
         }
 
         .timer-warning {
-            background: linear-gradient(90deg, #ef4444, #f87171); /* Rojo para advertencia */
+            background: linear-gradient(90deg, #ef4444, #f87171); 
         }
 
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         @keyframes fadeIn {
@@ -77,7 +79,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(15, 23, 42, 0.9);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -87,11 +89,11 @@
         .celebration-content {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 24px;
             text-align: center;
             border: 2px solid #eab308;
-            box-shadow: 0 0 40px rgba(234, 179, 8, 0.4);
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(234, 179, 8, 0.5);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes popIn {
@@ -114,16 +116,16 @@
         /* Notificación Toast */
         #toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: #eab308;
-            color: #000;
-            padding: 12px 24px;
+            color: #0f172a;
+            padding: 14px 28px;
             border-radius: 30px;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 500;
         }
 
@@ -131,76 +133,77 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* UI de Equipos */
+        /* UI de Equipos y Poderes */
         .team-card {
             transition: all 0.3s;
             border: 2px solid transparent;
         }
         .team-active {
-            border-color: #eab308; /* Borde amarillo brillante */
+            border-color: #eab308; 
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+            background-color: #1e293b !important;
         }
         
         .perk-btn {
-            background: #475569;
-            border: 1px solid #94a3b8;
+            background: #334155;
+            border: 1px solid #475569;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
+            font-size: 16px;
             margin: 2px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .perk-btn:hover { background: #64748b; }
+        .perk-btn:hover:not(:disabled) { background: #475569; transform: scale(1.1); }
         .perk-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body class="min-h-screen flex flex-col items-center py-8 px-4">
 
     <div id="app-container" class="w-full max-w-3xl flex flex-col gap-6">
         
         <!-- Header -->
-        <header class="text-center mb-4">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 drop-shadow-lg mb-2">
+        <header class="text-center mb-2">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 drop-shadow-lg mb-2 tracking-tight">
                 Trivia Bíblica
             </h1>
-            <p class="text-slate-400">Edición Multijugador Avanzada</p>
+            <p class="text-slate-400 font-medium">Edición Multijugador Avanzada</p>
         </header>
 
         <!-- Pantalla de Inicio -->
-        <div id="home-screen" class="glass-panel p-8 rounded-2xl flex flex-col items-center fade-in">
+        <div id="home-screen" class="glass-panel p-8 rounded-3xl flex flex-col items-center fade-in">
             <div class="mb-8 text-center">
-                <span class="text-6xl mb-4 block">🏆</span>
+                <span class="text-6xl mb-4 block drop-shadow-md">🏆</span>
                 <h2 class="text-2xl font-bold mb-2">¡Pon a prueba tu conocimiento!</h2>
-                <p class="text-slate-300">Selecciona el número de equipos y la dificultad para comenzar.</p>
+                <p class="text-slate-300">Selecciona el número de equipos y la dificultad.</p>
             </div>
 
             <!-- Selección de Equipos -->
-            <div class="w-full mb-8">
-                <h3 class="text-lg font-semibold mb-3 text-center">Cantidad de Equipos (1-4)</h3>
-                <div class="flex justify-center gap-3">
-                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl team-active bg-slate-500" data-teams="1">1</button>
-                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="2">2</button>
-                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="3">3</button>
-                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="4">4</button>
+            <div class="w-full mb-10">
+                <h3 class="text-lg font-semibold mb-4 text-center text-slate-200">Cantidad de Equipos (1-4)</h3>
+                <div class="flex justify-center gap-4">
+                    <button class="team-sel-btn w-14 h-14 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl team-active" data-teams="1">1</button>
+                    <button class="team-sel-btn w-14 h-14 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="2">2</button>
+                    <button class="team-sel-btn w-14 h-14 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="3">3</button>
+                    <button class="team-sel-btn w-14 h-14 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="4">4</button>
                 </div>
             </div>
 
             <!-- Botones de Dificultad -->
             <div class="w-full flex flex-col gap-4">
-                <button onclick="initGame('facil')" class="w-full py-4 rounded-xl font-bold text-lg bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/50 transition">
+                <button onclick="initGame('facil')" class="w-full py-4 rounded-xl font-bold text-lg bg-slate-800 border border-emerald-500/30 hover:bg-slate-700 hover:border-emerald-500 text-emerald-400 shadow-lg transition duration-300">
                     Nivel Fácil
                 </button>
-                <button onclick="initGame('medio')" class="w-full py-4 rounded-xl font-bold text-lg bg-yellow-600 hover:bg-yellow-500 shadow-lg shadow-yellow-900/50 transition">
+                <button onclick="initGame('medio')" class="w-full py-4 rounded-xl font-bold text-lg bg-slate-800 border border-yellow-500/30 hover:bg-slate-700 hover:border-yellow-500 text-yellow-400 shadow-lg transition duration-300">
                     Nivel Medio
                 </button>
-                <button onclick="initGame('dificil')" class="w-full py-4 rounded-xl font-bold text-lg bg-red-600 hover:bg-red-500 shadow-lg shadow-red-900/50 transition">
+                <button onclick="initGame('dificil')" class="w-full py-4 rounded-xl font-bold text-lg bg-slate-800 border border-red-500/30 hover:bg-slate-700 hover:border-red-500 text-red-400 shadow-lg transition duration-300">
                     Nivel Difícil
                 </button>
             </div>
@@ -214,30 +217,30 @@
                 <!-- Se llena dinámicamente -->
             </div>
 
-            <div class="glass-panel p-6 rounded-2xl w-full">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl w-full relative overflow-hidden">
                 <!-- Temporizador -->
-                <div class="flex justify-between text-sm text-slate-400 mb-1">
-                    <span id="question-counter" class="font-bold text-yellow-400">Pregunta 1/20</span>
-                    <span id="time-text">20s</span>
+                <div class="flex justify-between text-sm text-slate-400 mb-2 font-medium">
+                    <span id="question-counter" class="text-sky-400">Pregunta 1/20</span>
+                    <span id="time-text" class="tabular-nums">20s</span>
                 </div>
                 <div class="timer-bar-container">
                     <div id="timer-bar" class="timer-bar"></div>
                 </div>
 
                 <!-- Categoría -->
-                <div class="flex justify-center mb-4">
-                    <span id="category-badge" class="px-4 py-1 rounded-full bg-blue-900 text-blue-200 text-sm font-semibold border border-blue-700">
+                <div class="flex justify-center mb-6">
+                    <span id="category-badge" class="px-5 py-1.5 rounded-full bg-sky-900/50 text-sky-200 text-xs font-bold uppercase tracking-wider border border-sky-700/50">
                         Categoría
                     </span>
                 </div>
 
                 <!-- Imagen (Opcional) -->
-                <div id="image-container" class="hidden w-full flex justify-center mb-6">
-                    <img id="question-image" src="" alt="Imagen de la pregunta" class="max-h-48 rounded-lg shadow-md border border-slate-600 object-contain">
+                <div id="image-container" class="hidden w-full flex justify-center mb-8">
+                    <img id="question-image" src="" alt="Imagen de la pregunta" class="max-h-52 rounded-xl shadow-xl border border-slate-600/50 object-contain">
                 </div>
 
                 <!-- Pregunta -->
-                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8 leading-relaxed">
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8 leading-relaxed text-slate-50">
                     ¿Pregunta?
                 </h2>
 
@@ -248,13 +251,13 @@
             </div>
 
             <!-- Explicación (Aparece tras responder) -->
-            <div id="explanation-container" class="hidden glass-panel p-6 rounded-2xl border-l-4 border-l-blue-500 fade-in">
-                <h3 class="font-bold text-lg mb-2 text-blue-400 flex items-center gap-2">
+            <div id="explanation-container" class="hidden glass-panel p-6 rounded-2xl border-l-4 border-l-sky-500 fade-in">
+                <h3 class="font-bold text-lg mb-3 text-sky-400 flex items-center gap-2">
                     <span>💡</span> Dato Interesante
                 </h3>
-                <p id="explanation-text" class="text-slate-300 leading-relaxed"></p>
+                <p id="explanation-text" class="text-slate-300 leading-relaxed text-sm md:text-base"></p>
                 <div class="mt-6 flex justify-end">
-                    <button id="next-btn" onclick="nextTurn()" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold shadow-lg transition">
+                    <button id="next-btn" onclick="nextTurn()" class="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold shadow-lg transition duration-200">
                         Siguiente Equipo ➡️
                     </button>
                 </div>
@@ -262,17 +265,22 @@
         </div>
 
         <!-- Pantalla de Resultados -->
-        <div id="results-screen" class="hidden glass-panel p-8 rounded-2xl flex-col items-center text-center fade-in">
-            <span class="text-6xl mb-4 block">🏁</span>
-            <h2 class="text-3xl font-bold text-yellow-400 mb-6">¡Juego Terminado!</h2>
+        <div id="results-screen" class="hidden glass-panel p-10 rounded-3xl flex-col items-center text-center fade-in">
+            <span class="text-6xl mb-6 block">🏁</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 mb-8">¡Juego Terminado!</h2>
             
-            <div id="final-podium" class="w-full flex flex-col gap-3 mb-8">
+            <div id="final-podium" class="w-full flex flex-col gap-4 mb-10">
                 <!-- Podio dinámico -->
             </div>
 
-            <button onclick="returnToHome()" class="px-8 py-4 bg-slate-700 hover:bg-slate-600 rounded-xl font-bold shadow-lg transition">
-                Volver al Menú Principal
-            </button>
+            <div class="flex flex-col md:flex-row gap-4 w-full justify-center">
+                <button onclick="playAgainSameLevel()" class="px-8 py-4 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold shadow-lg transition">
+                    Jugar Revancha 🔄
+                </button>
+                <button onclick="returnToHome()" class="px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold shadow-lg transition">
+                    Menú Principal 🏠
+                </button>
+            </div>
         </div>
 
     </div>
@@ -280,11 +288,11 @@
     <!-- Modal Logro "Erudito" -->
     <div id="celebration-modal">
         <div class="celebration-content">
-            <span class="text-7xl block mb-4">🎓</span>
-            <h2 class="text-3xl font-extrabold text-yellow-400 mb-2">¡ERUDITO BÍBLICO!</h2>
-            <p id="celeb-team-name" class="text-xl mb-4">¡El Equipo X ha alcanzado 10 aciertos!</p>
-            <p class="text-slate-400 mb-6 text-sm">Excelente conocimiento de las Escrituras.</p>
-            <button onclick="closeCelebration()" class="px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-bold rounded-lg transition">
+            <span class="text-7xl block mb-6 drop-shadow-lg">🎓</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 mb-2">¡ERUDITO BÍBLICO!</h2>
+            <p id="celeb-team-name" class="text-xl md:text-2xl font-bold text-white mb-4">¡El Equipo X ha alcanzado 10 aciertos!</p>
+            <p class="text-slate-400 mb-8 text-sm md:text-base">Excelente conocimiento y dominio de las Escrituras.</p>
+            <button onclick="closeCelebration()" class="px-8 py-3 bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold rounded-xl shadow-lg transition duration-200">
                 Continuar Juego
             </button>
         </div>
@@ -294,58 +302,63 @@
     <div id="toast">¡Notificación!</div>
 
     <script>
-        // --- STREAMING_CHUNK:Inicializando Base de Datos de Preguntas... ---
         const questionsDB = [
-            // --- FÁCIL ---
+            // --- NIVEL FÁCIL: Imágenes, Básicas y Capciosas ---
             { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xTzZgd5Q/Noe.webp", question: "Lee la pista en la imagen. ¿De quién se trata?", options: ["Lot", "Moisés", "Noé", "Abrahán"], correctIndex: 2, explanation: "Noé fue un hombre justo que construyó un arca enorme por mandato de Dios para salvar a su familia y a los animales del Diluvio universal." },
             { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/qM3FQ7wk/David.webp", question: "¿Quién es este valiente personaje?", options: ["David", "Josué", "Gedeón", "Sansón"], correctIndex: 0, explanation: "David, siendo apenas un joven pastor, confió en Jehová y derrotó al gigante filisteo Goliat usando solo una honda y piedras." },
             { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/MKQLtG5z/Jonas.webp", question: "¿A quién le ocurrió esto?", options: ["Pedro", "Jonás", "Pablo", "Elías"], correctIndex: 1, explanation: "Jonás intentó huir de la misión que Dios le dio en Nínive, pero tras una tormenta, fue tragado por un enorme pez donde estuvo 3 días." },
             { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/BQKzNvpS/daniel.webp", question: "¿Quién mantuvo su costumbre de orar a pesar de la ley?", options: ["Jeremías", "Daniel", "Ezequiel", "Isaías"], correctIndex: 1, explanation: "Daniel continuó orando a Jehová tres veces al día, lo que lo llevó a ser arrojado al foso de los leones, de donde Dios lo rescató." },
             { difficulty: "facil", category: "Cronología", image: "https://i.postimg.cc/tCxcDgkR/Creacion.webp", question: "¿Qué evento representa esta línea de tiempo?", options: ["La reconstrucción del templo", "El diluvio", "La Creación de la Tierra", "Las plagas de Egipto"], correctIndex: 2, explanation: "Génesis describe que Dios preparó la Tierra para los seres humanos durante 6 'días' creativos (períodos largos de tiempo) y descansó en el séptimo." },
-            { difficulty: "facil", category: "Creencias de los Testigos", question: "Si alguien es una 'buena persona', ¿a dónde enseña la Biblia que irá al morir?", options: ["Al cielo como ángel", "Al cielo si fue bautizado", "Dormirá hasta la resurrección en un Paraíso terrestre", "Al purgatorio para purificarse"], correctIndex: 2, explanation: "Salmo 37:29 dice: 'Los justos heredarán la tierra y vivirán en ella para siempre'. Solo un rebaño pequeño de 144.000 va al cielo." },
-            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Qué dice la Biblia sobre el origen de la vida?", options: ["Llegó por casualidad", "Dios usó la evolución", "Dios es la fuente de la vida", "Es un misterio sin respuesta"], correctIndex: 2, explanation: "Salmo 36:9 dice dirigido a Dios: 'En ti está la fuente de la vida'. Creemos en un Creador inteligente." },
-            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Qué enseñan los Testigos de Jehová sobre la cruz?", options: ["Que Jesús murió en una", "Que es un símbolo de protección", "Que Jesús murió en un madero o poste vertical", "Que debe venerarse pero no adorarse"], correctIndex: 2, explanation: "La palabra griega 'staurós' significa madero o poste. No hay evidencia de que se usara un madero transversal. Además, rechazamos venerar el instrumento de ejecución." },
-            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Por qué sufrimos y morimos?", options: ["Es un castigo de Dios por nuestros pecados", "Dios nos necesita en el cielo", "Es una prueba de fe", "Heredamos el pecado de Adán y Eva"], correctIndex: 3, explanation: "Romanos 5:12 explica que el pecado entró en el mundo por medio de un solo hombre (Adán), y con el pecado la muerte." },
-            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Cuál es la cualidad principal de Jehová?", options: ["Justicia", "Poder", "Amor", "Sabiduría"], correctIndex: 2, explanation: "1 Juan 4:8 lo resume claramente: 'Dios es amor'. Es la esencia de su ser." },
-            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Por qué los Testigos de Jehová no participan en la guerra?", options: ["Por cobardía", "Porque aman a sus enemigos y son neutrales", "Porque no les interesa la política", "Porque no creen en los gobiernos"], correctIndex: 1, explanation: "Jesús dijo a sus seguidores que amaran a sus enemigos y afirmó: 'Mi reino no es parte de este mundo' (Juan 18:36)." },
-            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién fue elegido para sacar a los israelitas de Egipto?", options: ["Aarón", "Moisés", "Josué", "Caleb"], correctIndex: 1, explanation: "Moisés fue elegido por Jehová en la zarza ardiente para ser el líder y libertador de Israel." },
-            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién fue la madre humana de Jesús?", options: ["Marta", "Rut", "María", "Ester"], correctIndex: 2, explanation: "María, una joven virgen de Nazaret, concibió a Jesús por medio del espíritu santo." },
-            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién preparó el camino para el ministerio de Jesús?", options: ["Elías", "Pedro", "Juan el Bautista", "Isaías"], correctIndex: 2, explanation: "Juan el Bautista bautizó con agua en símbolo de arrepentimiento y presentó a Jesús como el 'Cordero de Dios'." },
-            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Cuál es el nombre del Dios Todopoderoso?", options: ["Señor", "Jehová", "Jesús", "El Creador"], correctIndex: 1, explanation: "Salmo 83:18 dice: 'Que la gente sepa que tu nombre es Jehová, que solo tú eres el Altísimo sobre toda la tierra'." },
-            { difficulty: "facil", category: "Prácticas Espiritistas", question: "¿Qué actitud debe tener el cristiano frente al horóscopo o los videntes?", options: ["Consultarlos solo por diversión", "Creer en ellos solo si no hacen daño", "Rechazarlos totalmente porque nos ponen en contacto con los demonios", "Son inofensivos porque no son reales"], correctIndex: 2, explanation: "La Biblia condena tajantemente la adivinación y el espiritismo, ya que son formas de comunicarse con los demonios." },
-            { difficulty: "dificil", category: "Vida Cristiana", question: "Aunque la Biblia no recomienda la separación, ¿en qué caso extremo podría justificarse?", options: ["Solo en caso de adulterio", "Si el cónyuge no es Testigo", "Maltrato físico gravísimo o riesgo extremo espiritual", "Si discuten mucho"], correctIndex: 2, explanation: "Para el divorcio que permite nuevo matrimonio, la única base es la 'porneia'. Pero para separación, se contempla la negativa absoluta a mantener la familia, violencia extrema o peligro espiritual grave." },
+            { difficulty: "facil", category: "Creencias", question: "Si alguien es una 'buena persona', ¿a dónde enseña la Biblia que irá al morir?", options: ["Al cielo como ángel", "Al cielo si fue bautizado", "Dormirá hasta la resurrección en un Paraíso terrestre", "Al purgatorio para purificarse"], correctIndex: 2, explanation: "Salmo 37:29 dice: 'Los justos heredarán la tierra y vivirán en ella para siempre'. El propósito original de Dios para la humanidad es la Tierra." },
+            { difficulty: "facil", category: "Neutralidad", question: "Cuando se toca el himno nacional o se saluda a la bandera, ¿qué debe hacer un cristiano?", options: ["Participar para no ofender a los demás", "Respetar el acto sin participar, pues rendir honores a un símbolo es idolatría", "Burlarse de quienes participan", "Abandonar el lugar inmediatamente"], correctIndex: 1, explanation: "Los siervos de Jehová respetan los símbolos patrios pero no les rinden actos de adoración, manteniendo su lealtad exclusiva a Dios." },
+            { difficulty: "facil", category: "Reuniones", question: "Según Hebreos 10:24, 25, ¿cuál es uno de los propósitos principales de las reuniones de congregación?", options: ["Hacer vida social", "Recolectar donaciones para el Salón del Reino", "Estar pendientes unos de otros para motivarnos a mostrar amor y hacer buenas obras", "Relajarnos y desconectar del mundo"], correctIndex: 2, explanation: "Las reuniones cristianas tienen el propósito principal de edificarnos espiritualmente, adorar a Jehová y animarnos mutuamente." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos animales metió Moisés en el arca?", options: ["Dos de cada especie", "Siete limpios y dos impuros", "144 mil animales", "Ninguno"], correctIndex: 3, explanation: "Ninguno, porque el que construyó el arca y metió a los animales fue Noé, no Moisés." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Qué fruto le dio Eva a Adán del árbol prohibido?", options: ["Una manzana roja", "Un higo", "Una granada", "La Biblia no especifica qué fruta era"], correctIndex: 3, explanation: "La Biblia simplemente lo llama 'el fruto del árbol', nunca especifica que haya sido una manzana." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿De qué nacionalidad era el Buen Samaritano de la parábola de Moisés?", options: ["Judío", "Samaritano", "Egipcio", "La parábola no la contó Moisés"], correctIndex: 3, explanation: "La parábola del Buen Samaritano fue contada por Jesús siglos después, no por Moisés." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿En qué río del Paraíso se bautizó Adán?", options: ["Río Éufrates", "Río Tigris", "Río Jordán", "Adán nunca se bautizó"], correctIndex: 3, explanation: "El bautismo es un arreglo cristiano instituido milenios después; Adán nunca se bautizó." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántas plagas envió el rey David sobre Babilonia?", options: ["10 plagas", "7 plagas", "3 plagas", "Ninguna"], correctIndex: 3, explanation: "Ninguna. Jehová envió las 10 plagas sobre Egipto a través de Moisés, no David sobre Babilonia." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cómo se llamaba la ballena que se tragó a Jonás?", options: ["Leviatán", "Moby Dick", "Behemot", "La Biblia no la llama ballena ni le da nombre"], correctIndex: 3, explanation: "La Biblia describe simplemente que Jehová preparó 'un gran pez', sin especificar que fuera una ballena ni darle un nombre." },
+            { difficulty: "facil", category: "Pregunta Capciosa", question: "Cuando Goliat mató a David con una piedra, ¿de qué tribu era David?", options: ["Tribu de Judá", "Tribu de Benjamín", "Tribu de Leví", "Goliat no mató a David"], correctIndex: 3, explanation: "Es una trampa. Fue el joven David quien mató al gigante Goliat, no al revés." },
+            { difficulty: "facil", category: "Fiestas", question: "¿Por qué los testigos de Jehová no celebran cumpleaños?", options: ["Porque creen que nacemos con pecado", "Porque los únicos dos cumpleaños en la Biblia tuvieron un final fatal y por sus raíces paganas", "Para no gastar dinero", "Porque prefieren celebrar los aniversarios"], correctIndex: 1, explanation: "La Biblia solo registra los cumpleaños del Faraón y de Herodes (donde hubo ejecuciones), y la costumbre tiene origen en la astrología pagana." },
+            { difficulty: "facil", category: "Creencias", question: "¿Qué enseñan los Testigos de Jehová sobre la cruz?", options: ["Que Jesús murió en una", "Que es un símbolo de protección", "Que Jesús murió en un madero o poste vertical", "Que debe venerarse pero no adorarse"], correctIndex: 2, explanation: "La palabra griega 'staurós' significa madero o poste. Rechazamos la cruz porque es un símbolo pagano y no idolatramos el instrumento de ejecución de Cristo." },
+            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Cuál es la cualidad principal de Jehová?", options: ["Justicia", "Poder", "Amor", "Sabiduría"], correctIndex: 2, explanation: "1 Juan 4:8 lo resume claramente: 'Dios es amor'. Es la esencia absoluta de su ser." },
 
-            // --- CAPCIOSAS (TRAMPAS DE COMPRENSIÓN) ---
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos animales de cada especie metió Moisés en el arca?", options: ["2", "7", "14", "Ninguno"], correctIndex: 3, explanation: "Ninguno. Fue Noé quien construyó el arca y metió a los animales, no Moisés." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Qué clase de fruta le dio Eva a Adán del árbol prohibido?", options: ["Una manzana", "Un higo", "Una granada", "La Biblia no lo especifica"], correctIndex: 3, explanation: "La Biblia solo lo llama 'el fruto del árbol', nunca menciona que fuera una manzana." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuántos reyes magos visitaron a Jesús en el pesebre la noche en que nació?", options: ["Tres", "Dos", "Doce", "Ninguno"], correctIndex: 3, explanation: "Ninguno. La Biblia no dice que fueran reyes ni que fueran tres. Eran astrólogos y lo visitaron meses después en una casa, no en un pesebre." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿En qué libro de la Biblia se relata cuando el apóstol Pablo dividió el mar Rojo?", options: ["Hechos", "Romanos", "Éxodo", "En ninguno"], correctIndex: 3, explanation: "En ninguno. Fue Moisés quien, por el poder de Jehová, dividió el mar Rojo, no el apóstol Pablo." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿A qué edad se bautizó el rey David en el río Jordán?", options: ["30 años", "33 años", "12 años", "David nunca se bautizó"], correctIndex: 3, explanation: "El bautismo en agua fue introducido siglos después por Juan el Bautista; el rey David no se bautizó." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús nació el 25 de diciembre, ¿quiénes siguieron la estrella hasta Belén?", options: ["Los pastores", "Los astrólogos", "Nadie, no nació en esa fecha", "Los reyes magos"], correctIndex: 2, explanation: "Jesús no nació el 25 de diciembre. Además, la 'estrella' guio a los astrólogos primero a Herodes y luego a Jesús mucho después de su nacimiento." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cuántos años pasó Jonás en el vientre de la ballena?", options: ["3 años", "3 meses", "Ninguno", "40 años"], correctIndex: 2, explanation: "Ninguno. Jonás pasó 3 DÍAS y 3 noches, no años. Además, la Biblia dice 'un gran pez', no especifica que fuera una ballena." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta le cortó el cabello a Sansón mientras dormía?", options: ["Samuel", "Natán", "Dalila", "Ninguno"], correctIndex: 3, explanation: "Ningún profeta. Fue un hombre a quien Dalila llamó para que le cortara las siete trenzas de su cabeza mientras Sansón dormía sobre sus rodillas." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Quién era el emperador romano cuando Jehová envió las 10 plagas?", options: ["Augusto", "Nerón", "Tiberio", "No había emperador romano"], correctIndex: 3, explanation: "Las 10 plagas cayeron sobre Egipto en tiempos del Faraón, siglos antes de que existiera el Imperio Romano." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿En qué parte de la Biblia dice la frase: 'Ayúdate que yo te ayudaré'?", options: ["Proverbios", "Salmos", "Evangelios", "En ninguna parte"], correctIndex: 3, explanation: "Esta frase es un dicho popular, no se encuentra en ninguna parte de la Biblia." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿De qué tipo de madera construyó el apóstol Pedro el arca?", options: ["Acacia", "Cedro", "Madera resinosa", "Pedro no construyó el arca"], correctIndex: 3, explanation: "Fue Noé quien construyó el arca, no el apóstol Pedro." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuál de los 12 apóstoles traicionó a Jesús por 30 monedas de oro?", options: ["Judas Iscariote", "Pedro", "Tomás", "Ninguno"], correctIndex: 3, explanation: "Ninguno lo traicionó por monedas de oro. Judas Iscariote lo traicionó por 30 monedas de PLATA." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué mandamiento nos obliga a ir a misa todos los domingos?", options: ["El primero", "El tercero", "El cuarto", "Ninguno"], correctIndex: 3, explanation: "Ninguno. El sábado era el día de descanso judío, y los cristianos verdaderos no van a 'misa'." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Cuántas plagas envió el rey David sobre Babilonia?", options: ["10", "7", "3", "Ninguna"], correctIndex: 3, explanation: "Ninguna. Jehová envió las 10 plagas sobre Egipto mediante Moisés, no David sobre Babilonia." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "Cuando Goliat mató a David con una piedra, ¿de qué tribu era David?", options: ["Judá", "Benjamín", "Leví", "Goliat no mató a David"], correctIndex: 3, explanation: "La afirmación es falsa. Fue el joven David (de la tribu de Judá) quien mató al gigante Goliat, no al revés." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Cómo se llamaba la esposa de Caín que conoció en la tierra de Nod?", options: ["Awan", "Lilith", "Aclima", "La Biblia no da su nombre"], correctIndex: 3, explanation: "Génesis 4:17 dice que Caín tuvo relaciones con su esposa, pero la Biblia nunca menciona su nombre." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Qué evangelio relata la ascensión de María al cielo en cuerpo y alma?", options: ["Mateo", "Lucas", "Juan", "Ninguno"], correctIndex: 3, explanation: "Ninguno. La asunción de María no es una enseñanza bíblica, sino un dogma de la Iglesia Católica añadido mucho después." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jehová le dio los 10 mandamientos a Abrahán en el monte Sinaí...", options: ["Abrahán los rompió", "Eran tablas de oro", "Fue a Moisés, no a Abrahán", "Abrahán no quiso aceptarlos"], correctIndex: 2, explanation: "La premisa es falsa. Jehová le dio los Diez Mandamientos a Moisés, no a Abrahán." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué animal se tragó a Elías cuando huía hacia Tarsis?", options: ["Un gran pez", "Un león", "Un oso", "Ninguno"], correctIndex: 3, explanation: "Ninguno. Quien huía a Tarsis y fue tragado por un gran pez fue Jonás, no el profeta Elías." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿De qué nacionalidad era el Buen Samaritano de la parábola de Moisés?", options: ["Judío", "Samaritano", "Egipcio", "La parábola no es de Moisés"], correctIndex: 3, explanation: "La parábola del Buen Samaritano fue contada por Jesús, no por Moisés." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Quién fue el primer rey de Israel elegido por el profeta Elías?", options: ["David", "Saúl", "Salomón", "Elías no eligió al primer rey"], correctIndex: 3, explanation: "Fue el profeta Samuel quien, por orden de Jehová, ungió a Saúl como el primer rey de Israel, no Elías." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuántos días ayunó Jesucristo en el desierto antes de cruzar el mar Rojo?", options: ["40 días", "3 días", "40 años", "Jesús no cruzó el mar Rojo"], correctIndex: 3, explanation: "Jesús sí ayunó 40 días en el desierto, pero quien cruzó el mar Rojo fue Moisés con los israelitas siglos antes." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿En qué río del Paraíso se bautizó Adán?", options: ["Éufrates", "Tigris", "Jordán", "Adán no se bautizó"], correctIndex: 3, explanation: "El bautismo es un arreglo cristiano introducido milenios después; Adán nunca se bautizó." },
-            { difficulty: "facil", category: "Pregunta Capciosa", question: "¿Cómo se llamaba la ballena que se tragó a Jonás?", options: ["Leviatán", "Moby Dick", "Behemot", "La Biblia no le da nombre"], correctIndex: 3, explanation: "La Biblia simplemente lo describe como 'un gran pez' que Jehová preparó, no le da ningún nombre ni especifica que fuera una ballena." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús multiplicó los panes y los peces, ¿qué apóstol los había horneado?", options: ["Pedro", "Juan", "Mateo", "Ninguno"], correctIndex: 3, explanation: "Ninguno. Los panes y pescados pertenecían a un muchachito que estaba en la multitud, y Jesús los multiplicó milagrosamente." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta hizo caer los muros de Jericó con explosivos?", options: ["Isaías", "Jeremías", "Josué", "Ninguno"], correctIndex: 3, explanation: "Los muros de Jericó cayeron milagrosamente por el poder de Jehová en los días de Josué, tras marchar alrededor y tocar cuernos, no con explosivos." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuál fue el primer milagro que hizo Jesús en el templo de Salomón?", options: ["Caminar sobre el agua", "Multiplicar los panes", "Convertir agua en vino", "Ninguno de los anteriores"], correctIndex: 3, explanation: "El primer milagro de Jesús fue convertir agua en vino, pero ocurrió en una fiesta de bodas en Caná de Galilea, no en el templo de Salomón." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿En qué libro encontramos la historia de los apóstoles Sadrac, Mesac y Abednego?", options: ["Hechos", "Daniel", "Apocalipsis", "No eran apóstoles"], correctIndex: 3, explanation: "No eran apóstoles cristianos. Eran jóvenes hebreos fieles en Babilonia, y su historia está en el libro de Daniel." },
-            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Cuántas horas tardó Dios en crear la Tierra literalmente?", options: ["24 horas", "144 horas", "72 horas", "No fueron horas literales"], correctIndex: 3, explanation: "La Biblia usa la palabra 'día' para referirse a largos periodos o eras creativas, no a días de 24 horas literales." },
-            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuál es la profecía de Juan el Bautista sobre el Armagedón en su libro de Apocalipsis?", options: ["La bestia salvaje", "Los 144,000", "La nueva Jerusalén", "Él no escribió Apocalipsis"], correctIndex: 3, explanation: "El libro de Apocalipsis (Revelación) fue escrito por el apóstol Juan, no por Juan el Bautista (quien fue decapitado mucho antes)." }
+            // --- NIVEL MEDIO ---
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/SxBkDKwp/Zaqueo-(1).webp", question: "¿Quién es este personaje que quería ver a Jesús?", options: ["Mateo", "Zaqueo", "Bartimeo", "Nicodemo"], correctIndex: 1, explanation: "Zaqueo, siendo jefe de los recaudadores de impuestos y de baja estatura, se subió a un sicómoro para poder ver a Jesús pasar." },
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/MpCqdGhz/Timoteo-(1).webp", question: "¿De qué excelente compañero de Pablo hablamos?", options: ["Tito", "Bernabé", "Timoteo", "Marcos"], correctIndex: 2, explanation: "Timoteo fue enseñado desde su infancia por su madre Eunice y su abuela Loida en los santos escritos." },
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/Z5G4Vq1T/Rut-(1).webp", question: "¿Qué mujer moabita le dijo esto a su suegra Noemí?", options: ["Orpá", "Rut", "Raquel", "Rebeca"], correctIndex: 1, explanation: "Rut demostró un amor leal extraordinario al decirle a Noemí: 'A donde tú vayas, yo iré... Tu pueblo será mi pueblo y tu Dios será mi Dios'." },
+            { difficulty: "medio", category: "Cronología", image: "https://i.postimg.cc/0yTPcNL5/Decierto-(1).webp", question: "¿A qué evento bíblico corresponde esta línea de tiempo?", options: ["El reinado de David", "El ministerio de Moisés en Egipto", "El viaje de Israel por el desierto", "El tiempo que Jesús vivió en la tierra"], correctIndex: 2, explanation: "Los israelitas vagaron por el desierto durante 40 años debido a su falta de fe antes de entrar a la Tierra Prometida." },
+            { difficulty: "medio", category: "Profecías", image: "https://i.postimg.cc/LsjR7ppd/reino-de-mil-anos-(1).webp", question: "¿Qué ocurrirá durante este período según Apocalipsis?", options: ["Satanás gobernará la tierra", "La tierra será destruida por fuego", "El Reinado Milenario de Cristo", "Los 144,000 vivirán en la tierra"], correctIndex: 2, explanation: "Jesucristo gobernará como Rey sobre la Tierra durante mil años para restaurar el paraíso y la perfección humana." },
+            { difficulty: "medio", category: "La Sangre", question: "¿Permite la Biblia el uso de fracciones menores de la sangre?", options: ["Sí, siempre", "No, bajo ninguna circunstancia", "Es un asunto de conciencia personal de cada cristiano", "Solo en casos de extrema emergencia"], correctIndex: 2, explanation: "La Biblia manda abstenerse de sangre. Sin embargo, el uso de fracciones menores derivadas de los componentes principales es una decisión de conciencia." },
+            { difficulty: "medio", category: "El Rescate", question: "¿Qué precio se pagó exactamente para liberarnos del pecado y la muerte?", options: ["El sufrimiento de Jesús en el madero", "La vida humana perfecta de Jesús, correspondiente a lo que Adán perdió", "La sangre de animales sacrificados", "Las buenas obras de los profetas"], correctIndex: 1, explanation: "La justicia perfecta de Dios exigía 'alma por alma'. Jesús dio su vida humana perfecta como rescate para recuperar lo que el perfecto Adán perdió." },
+            { difficulty: "medio", category: "1914", question: "¿Qué evento celestial importante ocurrió en 1914 según las profecías bíblicas?", options: ["El fin del mundo", "El comienzo del Armagedón", "Jesucristo fue entronizado como Rey del Reino de Dios", "Satanás fue creado"], correctIndex: 2, explanation: "En 1914 terminaron los Tiempos de los Gentiles y Jehová instaló a Jesucristo como Rey en los cielos, tras lo cual Satanás fue arrojado a la Tierra." },
+            { difficulty: "medio", category: "Muerte", question: "¿Qué es el 'infierno' bíblico (Sheol o Hades)?", options: ["Un lugar de tormento y fuego", "Un estado de separación mental de Dios", "El sepulcro común de la humanidad, donde los muertos descansan sin consciencia", "El purgatorio"], correctIndex: 2, explanation: "El Sheol/Hades se refiere a la sepultura común donde las personas están inconscientes esperando la resurrección, no un lugar de tortura." },
+            { difficulty: "medio", category: "Alma", question: "Cuando la Biblia habla de que 'el alma que peca morirá' (Ezequiel 18:4), ¿qué significa?", options: ["Que el espíritu sufre eternamente", "Que la persona misma (el ser vivo) muere y deja de existir", "Que el cuerpo muere pero el alma es inmortal", "Que pierde el favor de Dios pero vive en el más allá"], correctIndex: 1, explanation: "En la Biblia, 'alma' se refiere a la persona misma o a la vida de la criatura. Al morir, el alma entera muere." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuántos reyes magos visitaron a Jesús en el pesebre la noche en que nació?", options: ["Tres reyes magos", "Dos reyes magos", "Doce reyes magos", "Ninguno"], correctIndex: 3, explanation: "Ninguno. La Biblia menciona astrólogos (no reyes), no especifica que fueran tres, y lo visitaron en una casa meses después, no en un pesebre." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿En qué libro de la Biblia se relata cuando el apóstol Pablo dividió el mar Rojo?", options: ["El libro de los Hechos", "Carta a los Romanos", "El libro de Éxodo", "En ninguno"], correctIndex: 3, explanation: "En ninguno. Fue Moisés quien, por el poder de Jehová, dividió el mar Rojo siglos antes de que Pablo naciera." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús nació el 25 de diciembre, ¿quiénes siguieron la estrella hasta Belén?", options: ["Los pastores de las ovejas", "Los astrólogos de Oriente", "Nadie, porque no nació en esa fecha", "Los ángeles del cielo"], correctIndex: 2, explanation: "Trampa. Jesús no nació el 25 de diciembre (fecha de invierno incompatible con los pastores a campo raso)." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta le cortó el cabello a Sansón mientras dormía?", options: ["El profeta Samuel", "El profeta Natán", "La profetisa Débora", "Ningún profeta"], correctIndex: 3, explanation: "Ningún profeta lo hizo. Dalila llamó a un hombre filisteo para que le cortara las siete trenzas mientras Sansón dormía en sus rodillas." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Cuál de los 12 apóstoles traicionó a Jesús por 30 monedas de oro?", options: ["Judas Iscariote", "Pedro el apóstol", "Tomás el incrédulo", "Ninguno por oro"], correctIndex: 3, explanation: "Judas Iscariote lo traicionó, pero fue por 30 monedas de PLATA, no de oro." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "Cuando Jesús multiplicó los panes y los peces, ¿qué apóstol los había horneado?", options: ["Pedro", "Juan", "Mateo", "Ninguno"], correctIndex: 3, explanation: "Ninguno. Los cinco panes y dos pescaditos pertenecían a un muchachito que estaba en la multitud." },
+            { difficulty: "medio", category: "Pregunta Capciosa", question: "¿Qué profeta hizo caer los muros de Jericó con explosivos?", options: ["El profeta Isaías", "El profeta Jeremías", "El líder Josué", "Ninguno"], correctIndex: 3, explanation: "Los muros cayeron milagrosamente por el poder de Dios en los días de Josué, tras marchar y tocar los cuernos, no con explosivos." },
+
+            // --- NIVEL DIFÍCIL ---
+            { difficulty: "dificil", category: "Profecías", image: "https://i.postimg.cc/FK0mq44N/70-semanas.webp", question: "¿Qué evento principal anunciaba esta profecía de Daniel 9?", options: ["La caída de Babilonia", "La aparición y muerte del Mesías", "El inicio del reinado de 1000 años", "La destrucción de Jerusalén en 70 e.c."], correctIndex: 1, explanation: "La profecía de las 70 semanas señalaba el tiempo exacto de la llegada del Mesías en el año 29 e.c. y su muerte posterior." },
+            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xdLY7229/Nabucodonosor.webp", question: "¿Qué rey de Babilonia tuvo el sueño profético de la enorme estatua?", options: ["Belsasar", "Ciro", "Nabucodonosor", "Darío"], correctIndex: 2, explanation: "El rey Nabucodonosor soñó con una inmensa estatua de diferentes metales que representaba la sucesión de potencias mundiales." },
+            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/cJfZjSSs/Jezabel.webp", question: "¿Quién fue esta malvada reina de Israel?", options: ["Atalía", "Jezabel", "Salomé", "Ester"], correctIndex: 1, explanation: "Jezabel fue una perversa reina, esposa de Acab, que persiguió a los profetas de Jehová y promovió la adoración a Baal." },
+            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/yN0B5HHY/Ciro.webp", question: "¿Qué rey persa fue predicho por nombre por Isaías casi 200 años antes?", options: ["Darío el medo", "Artajerjes", "Jerjes", "Ciro el Grande"], correctIndex: 3, explanation: "El profeta Isaías predijo por nombre que Ciro conquistaría Babilonia y liberaría a los judíos, detallando cómo secaría el río y abriría las puertas." },
+            { difficulty: "dificil", category: "El Día del Señor", question: "¿Qué es el 'Día de Jehová' o 'Día del Señor'?", options: ["El día domingo para descansar", "El momento de la muerte de cada persona", "El periodo en que Jehová ejecutará su sentencia contra este sistema malvado", "Un día de 24 horas literales en el que Dios juzgará al mundo"], correctIndex: 2, explanation: "Se refiere al tiempo en que Jehová intervendrá de forma decisiva en los asuntos humanos para eliminar la maldad y vindicar su soberanía." },
+            { difficulty: "dificil", category: "Neutralidad Laboral", question: "¿Estaría bien que un Testigo trabaje pintando un cuartel militar?", options: ["Nunca, está estrictamente prohibido en la Biblia", "Es una decisión de conciencia personal, considerando si el trabajo viola la neutralidad o si se percibe como apoyo a la guerra", "Sí, siempre y cuando no porte armas", "No, porque ganaría dinero del gobierno"], correctIndex: 1, explanation: "La Biblia no da reglas específicas sobre cada empleo. El cristiano debe evaluar con su conciencia si el trabajo en sí mismo apoya un propósito contrario a los principios bíblicos o si ofenderá a otros." },
+            { difficulty: "dificil", category: "La Gran Muchedumbre", question: "Según Apocalipsis 7:9, ¿quiénes componen la 'gran muchedumbre'?", options: ["Los 144,000 ungidos", "Los ángeles fieles que cantan", "Una cantidad innumerable de personas que sobrevivirán a la 'gran tribulación' para vivir en la Tierra", "Todas las personas buenas que han muerto y resucitarán"], correctIndex: 2, explanation: "Es un grupo incontable de personas de todas las naciones que adorarán a Dios y sobrevivirán al fin de este sistema para vivir en la Tierra." },
+            { difficulty: "dificil", category: "Brindis", question: "Un Testigo asiste a una boda donde se propone un 'brindis'. ¿Por qué podría optar por no participar?", options: ["Porque el alcohol está prohibido para los cristianos", "Porque los brindis tienen su origen en supersticiones y ofrendas a dioses falsos para pedir bendición", "Porque es un gasto innecesario de dinero", "Porque no le gusta el sabor del vino"], correctIndex: 1, explanation: "El choque de copas y los brindis se remontan a ritos paganos donde se ofrecía líquido a los dioses a cambio de un deseo o bendición." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un hermano necesita una operación y su vida corre riesgo, ¿qué excepción le permite la Biblia para aceptar una transfusión de sangre?", options: ["Se permite si luego confiesa su error a los ancianos", "La Biblia no permite NINGUNA excepción; el mandato de 'abstenerse de sangre' es absoluto incluso en emergencias", "Se permite si es sangre de un familiar cercano", "Se permite usar su propia sangre almacenada previamente"], correctIndex: 1, explanation: "En Hechos 15:28, 29, el mandato de 'abstenerse de sangre' no incluye cláusulas de excepción para emergencias médicas. La obediencia a Dios va por encima de la vida actual." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "El Reinado de 1000 años terminará. Cuando la humanidad sea perfecta, ¿qué sucederá con Satanás?", options: ["Será destruido inmediatamente sin oportunidad", "Se le dará una segunda oportunidad para arrepentirse", "Será soltado del abismo por 'un poco de tiempo' para una prueba final sobre la humanidad perfecta", "Gobernará una parte de la tierra junto a Jesús"], correctIndex: 2, explanation: "Apocalipsis indica que será liberado brevemente para una prueba decisiva final antes de su destrucción eterna." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Jesús dijo: 'El que ejerce fe en mí, llegará a vivir'. ¿Significa esto que Moisés y Abrahán irán al cielo?", options: ["Sí, todos los siervos fieles van al cielo a gobernar", "No, la esperanza celestial se reveló después de Jesús; los siervos antiguos resucitarán en la Tierra", "Sí, pero primero deben pasar por una purificación", "No, ellos ya están gobernando como ángeles"], correctIndex: 1, explanation: "Personajes pre-cristianos como Juan el Bautista o David no fueron al cielo (Hechos 2:34). Su recompensa es la resurrección en un paraíso terrenal." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un miembro bautizado comete un pecado grave, confiesa su error a los ancianos, demuestra un arrepentimiento genuino profundo y cambia su actitud, ¿qué medida se toma?", options: ["Es sacado de la congregación automáticamente porque el pecado es grave", "No es sacado de la congregación; el arrepentimiento permite que se le ayude con censura amorosa y restricciones", "Depende de cuántas veces haya pecado en toda su vida", "Es sacado de la congregación para dar el ejemplo a los demás"], correctIndex: 1, explanation: "Sacar a alguien de la congregación es la medida final para quienes NO se arrepienten. Si hay verdadero arrepentimiento, se le brinda ayuda misericordiosa." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "Si un hermano dice: 'He orado mucho al espíritu santo para que me dé fuerzas', ¿qué corrección bíblica aplica?", options: ["Debe orar con más fe y ayuno", "El espíritu santo no es una persona; se debe orar a Jehová en el nombre de Jesús para pedir su espíritu", "Debe orarle a Jesucristo directamente en su lugar", "Ninguna, es completamente correcto orar al espíritu santo"], correctIndex: 1, explanation: "El espíritu santo es el poder de Dios en acción. No se le debe dirigir oraciones, sino pedirlo al Padre." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Quién era el emperador romano cuando Jehová envió las 10 plagas?", options: ["César Augusto", "Nerón", "Tiberio César", "No existía ningún emperador romano en esa época"], correctIndex: 3, explanation: "Las plagas fueron sobre Egipto en tiempos del Faraón (Moisés), siglos antes de que el Imperio Romano y sus césares siquiera existieran." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿En qué libro encontramos la historia de los apóstoles Sadrac, Mesac y Abednego?", options: ["Hechos de los Apóstoles", "El libro de Daniel", "El libro de Apocalipsis", "En ninguno, porque no eran apóstoles cristianos"], correctIndex: 3, explanation: "Eran jóvenes hebreos fieles en Babilonia siglos antes de Cristo. Su historia está en Daniel, pero no eran apóstoles." },
+            { difficulty: "dificil", category: "Pregunta Capciosa", question: "¿Cuál es la profecía de Juan el Bautista sobre el Armagedón en su libro de Apocalipsis?", options: ["La bestia salvaje de 7 cabezas", "El sellado de los 144,000", "El descenso de la nueva Jerusalén", "Él no escribió el libro de Apocalipsis"], correctIndex: 3, explanation: "El libro de Apocalipsis (Revelación) fue escrito por el apóstol Juan, no por Juan el Bautista (quien había sido decapitado mucho antes)." }
         ];
 
         // --- ESTADO GLOBAL ---
@@ -354,7 +367,7 @@
         let currentQuestionIndex = 0;
         
         let numTeams = 1;
-        let teams = []; // Array de objetos { score: 0, perks: [], skipNextTurn: false, name: '' }
+        let teams = []; 
         let currentTeamTurn = 0; 
         let startingTeamForRound = 0; 
         let teamsTriedCurrentQuestion = []; 
@@ -363,38 +376,43 @@
         let timerInterval;
         let timeLeft = 20;
 
-        // --- STREAMING_CHUNK:Lógica de Inicialización de Equipos... ---
+        // Memoria Global Anti-Repetición
+        let playedQuestionsIds = { facil: [], medio: [], dificil: [] };
+        
+        let turnDirection = 1; 
+
+        // --- INICIALIZACIÓN DE LA UI ---
         const btnTeamSels = document.querySelectorAll('.team-sel-btn');
         btnTeamSels.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                btnTeamSels.forEach(b => b.classList.remove('team-active', 'bg-slate-500'));
-                e.target.classList.add('team-active', 'bg-slate-500');
+                btnTeamSels.forEach(b => {
+                    b.classList.remove('team-active');
+                    b.style.backgroundColor = '#334155'; // bg-slate-700 fallback
+                });
+                e.target.classList.add('team-active');
+                e.target.style.backgroundColor = '#1e293b'; // highlight
                 numTeams = parseInt(e.target.dataset.teams);
             });
         });
 
-        // --- STREAMING_CHUNK:Lógica del Motor del Juego... ---
         function initGame(difficulty) {
             currentLevel = difficulty;
             
+            // Asignar IDs a las preguntas si no los tienen para poder trackearlas
+            if(!questionsDB[0].id) {
+                questionsDB.forEach((q, idx) => q.id = idx);
+            }
+
             // Inicializar equipos
             teams = [];
             for(let i=0; i<numTeams; i++) {
-                teams.push({ score: 0, perks: [], skipNextTurn: false, name: `Equipo ${i+1}` });
+                teams.push({ score: 0, perks: [], skipNextTurn: false, name: `Eq. ${i+1}` });
             }
             currentTeamTurn = 0;
             startingTeamForRound = 0;
+            turnDirection = 1;
 
-            // Filtrar y mezclar
-            const filteredQuestions = questionsDB.filter(q => q.difficulty === difficulty);
-            for (let i = filteredQuestions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [filteredQuestions[i], filteredQuestions[j]] = [filteredQuestions[j], filteredQuestions[i]];
-            }
-            
-            // 20 preguntas por ronda
-            gameQuestions = filteredQuestions.slice(0, 20);
-            currentQuestionIndex = 0;
+            loadQuestionsForLevel(difficulty);
 
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
@@ -403,31 +421,63 @@
             loadQuestion();
         }
 
+        function loadQuestionsForLevel(difficulty) {
+            let filtered = questionsDB.filter(q => q.difficulty === difficulty);
+            
+            // Filtrar las que NO se han jugado en esta sesión
+            let available = filtered.filter(q => !playedQuestionsIds[difficulty].includes(q.id));
+
+            // Si se agotan, reiniciamos la memoria solo para este nivel
+            if (available.length < 20) {
+                if(playedQuestionsIds[difficulty].length > 0) {
+                    showToast("¡Memoria reiniciada! Has jugado todas las preguntas de este nivel.");
+                    playedQuestionsIds[difficulty] = [];
+                    available = filtered; // Tomamos todas de nuevo
+                } else {
+                    // Si el nivel tiene menos de 20 preguntas en total en la DB
+                    available = filtered;
+                }
+            }
+
+            // Shuffle (Fisher-Yates) para máxima aleatoriedad
+            for (let i = available.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [available[i], available[j]] = [available[j], available[i]];
+            }
+            
+            // Seleccionar hasta 20 preguntas (o las que haya)
+            gameQuestions = available.slice(0, 20);
+            
+            // Registrarlas en la memoria para que no salgan en la siguiente partida
+            gameQuestions.forEach(q => playedQuestionsIds[difficulty].push(q.id));
+            currentQuestionIndex = 0;
+        }
+
         function renderTeamsUI() {
             const panel = document.getElementById('teams-panel');
             panel.innerHTML = '';
             
             teams.forEach((team, index) => {
-                const isActive = (index === currentTeamTurn) ? 'team-active bg-slate-700' : 'bg-slate-800 opacity-75';
-                const turnIndicator = (index === currentTeamTurn) ? '<span class="text-xs text-yellow-400 block mb-1">¡TU TURNO!</span>' : '';
+                const isActive = (index === currentTeamTurn) ? 'team-active' : 'opacity-60 bg-slate-800';
+                const turnIndicator = (index === currentTeamTurn) ? '<span class="text-[10px] uppercase font-bold text-yellow-400 block mb-1 tracking-wider">Turno Activo</span>' : '';
                 
                 // Botones de Poderes
                 let perksHTML = '';
                 if(team.perks.length > 0) {
                     perksHTML = '<div class="mt-2 flex gap-1 justify-center">';
                     team.perks.forEach((perk, perkIndex) => {
-                        perksHTML += `<button onclick="usePerk(${index}, ${perkIndex})" class="perk-btn" title="${perk.name}" ${index !== currentTeamTurn || isAnsweredFinal ? 'disabled' : ''}>${perk.icon}</button>`;
+                        perksHTML += `<button onclick="usePerk(${index}, ${perkIndex})" class="perk-btn shadow-md" title="${perk.name}" ${index !== currentTeamTurn || isAnsweredFinal ? 'disabled' : ''}>${perk.icon}</button>`;
                     });
                     perksHTML += '</div>';
                 }
 
-                const skippedWarning = team.skipNextTurn ? '<span class="text-xs text-red-400 block">Turno Saltado</span>' : '';
+                const skippedWarning = team.skipNextTurn ? '<span class="text-xs text-red-400 block font-bold">Turno Saltado</span>' : '';
 
                 panel.innerHTML += `
-                    <div class="team-card ${isActive} rounded-xl p-3 text-center min-w-[100px] shadow-lg relative">
+                    <div class="team-card ${isActive} rounded-2xl p-3 md:p-4 text-center min-w-[100px] flex-1 max-w-[150px] shadow-lg relative bg-slate-800 border border-slate-600/50">
                         ${turnIndicator}
                         <h3 class="font-bold text-sm text-slate-300">${team.name}</h3>
-                        <p class="text-2xl font-extrabold text-white">${team.score}</p>
+                        <p class="text-3xl font-extrabold text-white my-1">${team.score}</p>
                         ${skippedWarning}
                         ${perksHTML}
                     </div>
@@ -435,7 +485,6 @@
             });
         }
 
-        // --- STREAMING_CHUNK:Carga de Preguntas e Imágenes... ---
         function loadQuestion() {
             if (currentQuestionIndex >= gameQuestions.length) {
                 showResults();
@@ -445,7 +494,7 @@
             isAnsweredFinal = false;
             teamsTriedCurrentQuestion = [];
 
-            // Limpiar skip de turno
+            // Limpiar skip de turno si el equipo actual estaba saltado
             if(teams[currentTeamTurn].skipNextTurn) {
                 teams[currentTeamTurn].skipNextTurn = false;
                 advanceTurnSubRound();
@@ -458,7 +507,7 @@
             document.getElementById('category-badge').innerText = q.category;
             document.getElementById('question-text').innerText = q.question;
             
-            // Imagen
+            // Cargar Imagen si existe
             const imgContainer = document.getElementById('image-container');
             const imgElem = document.getElementById('question-image');
             if (q.image) {
@@ -474,7 +523,7 @@
             
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-option w-full p-4 rounded-xl bg-slate-800 border border-slate-600 font-semibold text-lg hover:bg-slate-700 text-left';
+                btn.className = 'btn-option w-full p-4 md:p-5 rounded-2xl bg-slate-800 border border-slate-600 font-semibold text-base md:text-lg hover:bg-slate-700 text-left text-slate-200 shadow-md';
                 btn.innerText = opt;
                 btn.onclick = () => processTurnResult(index === q.correctIndex, btn, index);
                 optionsContainer.appendChild(btn);
@@ -486,10 +535,9 @@
             startTimer();
         }
 
-        // --- STREAMING_CHUNK:Gestión del Temporizador... ---
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = 20; // 20 Segundos actualizados
+            timeLeft = 20; 
             updateTimerUI();
 
             const timerBar = document.getElementById('timer-bar');
@@ -513,17 +561,18 @@
             document.getElementById('time-text').innerText = `${timeLeft}s`;
             const timerBar = document.getElementById('timer-bar');
             
-            const percentage = (timeLeft / 20) * 100; // Ajustado a 20s
+            const percentage = (timeLeft / 20) * 100;
             timerBar.style.width = `${percentage}%`;
             
             if (timeLeft <= 5) {
                 timerBar.classList.add('timer-warning');
+                document.getElementById('time-text').classList.add('text-red-400');
             } else {
                 timerBar.classList.remove('timer-warning');
+                document.getElementById('time-text').classList.remove('text-red-400');
             }
         }
 
-        // --- STREAMING_CHUNK:Procesamiento de Turnos y Robos... ---
         function processTurnResult(isCorrect, buttonElem, selectedIndex = -1) {
             clearInterval(timerInterval);
             teamsTriedCurrentQuestion.push(currentTeamTurn);
@@ -546,7 +595,7 @@
                 }
 
                 // Dar premio (Perk) cada 5 puntos
-                if(teams[currentTeamTurn].score % 5 === 0 && numTeams > 1) {
+                if(teams[currentTeamTurn].score > 0 && teams[currentTeamTurn].score % 5 === 0 && numTeams > 1) {
                     awardPerk(currentTeamTurn);
                 }
                 
@@ -558,7 +607,7 @@
                 
                 if (numTeams > 1 && teamsTriedCurrentQuestion.length < numTeams) {
                     // Robo disponible
-                    showToast("¡Incorrecto! Oportunidad de Robo 🔄");
+                    showToast(`¡Incorrecto! Turno de robo para el siguiente equipo 🔄`);
                     setTimeout(() => {
                         advanceTurnSubRound();
                     }, 1500);
@@ -572,7 +621,8 @@
         }
 
         function advanceTurnSubRound() {
-            currentTeamTurn = (currentTeamTurn + 1) % numTeams;
+            // Avanza el turno respetando la dirección (por si se usó el perk Reversa)
+            currentTeamTurn = (currentTeamTurn + turnDirection + numTeams) % numTeams;
             
             if(teams[currentTeamTurn].skipNextTurn) {
                  teams[currentTeamTurn].skipNextTurn = false;
@@ -592,18 +642,19 @@
 
             renderTeamsUI();
             
-            // Reactivar botones no fallados y reiniciar tiempo para el robo
+            // Reactivar botones no fallados para el robo
             const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => {
                 if(!b.classList.contains('incorrect')) b.disabled = false;
             });
-            startTimer();
+            startTimer(); // Reinicia el tiempo a 20s para el robo
         }
 
         function nextTurn() {
-            // Rotar quién inicia la siguiente ronda
+            // Siguiente Pregunta: Rota quién inicia para mantener equidad
             startingTeamForRound = (startingTeamForRound + 1) % numTeams;
             currentTeamTurn = startingTeamForRound;
+            turnDirection = 1; // Reinicia reversa cada ronda nueva
             currentQuestionIndex++;
             loadQuestion();
         }
@@ -617,23 +668,22 @@
             if (currentQuestionIndex >= gameQuestions.length - 1) {
                 nextBtn.innerText = "Ver Resultados 🏆";
             } else {
-                nextBtn.innerText = `Siguiente Equipo: ${teams[(startingTeamForRound + 1) % numTeams].name} ➡️`;
+                let nextTeamName = teams[(startingTeamForRound + 1) % numTeams].name;
+                nextBtn.innerText = numTeams > 1 ? `Siguiente Equipo: ${nextTeamName} ➡️` : `Siguiente Pregunta ➡️`;
             }
         }
 
-        // --- STREAMING_CHUNK:Sistema de Recompensas (Perks)... ---
-        let turnDirection = 1; 
-
+        // Sistema de Perks (Poderes)
         function awardPerk(teamIndex) {
             const availablePerks = [
                 { type: 'reversa', name: 'Reversa', icon: '🔄', desc: 'Invierte el orden de los turnos' },
                 { type: 'salto', name: 'Salto', icon: '⏭️', desc: 'Salta el turno del siguiente equipo' },
-                { type: 'penalizacion', name: 'Roba Puntos', icon: '⚡', desc: 'Resta 1 punto al siguiente equipo' }
+                { type: 'penalizacion', name: 'Roba 1 Punto', icon: '⚡', desc: 'Resta 1 punto al siguiente equipo' }
             ];
             const randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
             
             teams[teamIndex].perks.push(randomPerk);
-            showToast(`¡Premio! ${teams[teamIndex].name} ganó: ${randomPerk.name} ${randomPerk.icon}`);
+            showToast(`¡Bono especial! ${teams[teamIndex].name} ganó: ${randomPerk.name} ${randomPerk.icon}`);
             renderTeamsUI();
         }
 
@@ -650,15 +700,14 @@
                 showToast(`¡${team.name} usó Salto! ${teams[next].name} perderá su turno ⏭️.`);
             } else if (perk.type === 'penalizacion') {
                 let next = (currentTeamTurn + turnDirection + numTeams) % numTeams;
-                teams[next].score -= 1; 
-                showToast(`¡${team.name} restó 1 punto a ${teams[next].name} ⚡!`);
+                if(teams[next].score > 0) teams[next].score -= 1; // Evita puntajes negativos
+                showToast(`¡${team.name} le restó 1 punto a ${teams[next].name} ⚡!`);
             }
 
             teams[teamIndex].perks.splice(perkIndex, 1);
             renderTeamsUI();
         }
 
-        // --- STREAMING_CHUNK:Utilidades Visuales (Toasts y Resultados)... ---
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -667,17 +716,18 @@
         }
 
         function showCelebration(teamName) {
-            document.getElementById('celeb-team-name').innerText = `¡${teamName} ha alcanzado 10 aciertos!`;
+            document.getElementById('celeb-team-name').innerText = `¡${teamName} ha alcanzado 10 puntos!`;
             document.getElementById('celebration-modal').style.display = 'flex';
             
-            // Confeti
+            // Generador de Confeti
             const modal = document.getElementById('celebration-modal');
-            for(let i=0; i<50; i++) {
+            for(let i=0; i<60; i++) {
                 const conf = document.createElement('div');
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * 100 + 'vw';
                 conf.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                conf.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                conf.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                conf.style.opacity = Math.random();
                 modal.appendChild(conf);
             }
         }
@@ -703,15 +753,21 @@
             
             sortedTeams.forEach((team, index) => {
                 podium.innerHTML += `
-                    <div class="flex items-center justify-between p-4 bg-slate-800 rounded-xl border border-slate-600">
-                        <div class="flex items-center gap-4">
-                            <span class="text-3xl">${medals[index] || medals[3]}</span>
-                            <span class="text-xl font-bold">${team.name}</span>
+                    <div class="flex items-center justify-between p-5 bg-slate-800 rounded-2xl border border-slate-600/50 shadow-md">
+                        <div class="flex items-center gap-5">
+                            <span class="text-4xl drop-shadow-md">${medals[index] || medals[3]}</span>
+                            <span class="text-xl font-bold text-slate-200">${team.name}</span>
                         </div>
-                        <span class="text-2xl font-extrabold text-yellow-400">${team.score} pts</span>
+                        <span class="text-3xl font-extrabold text-yellow-400 drop-shadow-sm">${team.score} <span class="text-lg text-slate-400 font-medium">pts</span></span>
                     </div>
                 `;
             });
+        }
+
+        function playAgainSameLevel() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('flex');
+            initGame(currentLevel);
         }
 
         function returnToHome() {

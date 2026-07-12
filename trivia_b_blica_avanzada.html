@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Bíblica Avanzada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0f172a; /* Tailwind slate-900 */
+            color: #f8fafc; /* Tailwind slate-50 */
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7); /* Tailwind slate-800 con opacidad */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-option {
+            transition: all 0.3s ease;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            background-color: #334155; /* Tailwind slate-700 */
+        }
+
+        .correct {
+            background-color: #10b981 !important; /* Verde esmeralda */
+            color: white;
+            border-color: #059669;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .incorrect {
+            background-color: #ef4444 !important; /* Rojo */
+            color: white;
+            border-color: #b91c1c;
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #334155;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Azul */
+            width: 100%;
+            transition: width 1s linear, background-color 0.3s;
+        }
+
+        .timer-warning {
+            background: linear-gradient(90deg, #ef4444, #f87171); /* Rojo para advertencia */
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Celebración Modal */
+        #celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .celebration-content {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #eab308;
+            box-shadow: 0 0 40px rgba(234, 179, 8, 0.4);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        /* Notificación Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #eab308;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 500;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* UI de Equipos */
+        .team-card {
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .team-active {
+            border-color: #eab308; /* Borde amarillo brillante */
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+        }
+        
+        .perk-btn {
+            background: #475569;
+            border: 1px solid #94a3b8;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .perk-btn:hover { background: #64748b; }
+        .perk-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+
+    <div id="app-container" class="w-full max-w-3xl flex flex-col gap-6">
+        
+        <!-- Header -->
+        <header class="text-center mb-4">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 drop-shadow-lg mb-2">
+                Trivia Bíblica
+            </h1>
+            <p class="text-slate-400">Edición Multijugador Avanzada</p>
+        </header>
+
+        <!-- Pantalla de Inicio -->
+        <div id="home-screen" class="glass-panel p-8 rounded-2xl flex flex-col items-center fade-in">
+            <div class="mb-8 text-center">
+                <span class="text-6xl mb-4 block">🏆</span>
+                <h2 class="text-2xl font-bold mb-2">¡Pon a prueba tu conocimiento!</h2>
+                <p class="text-slate-300">Selecciona el número de equipos y la dificultad para comenzar.</p>
+            </div>
+
+            <!-- Selección de Equipos -->
+            <div class="w-full mb-8">
+                <h3 class="text-lg font-semibold mb-3 text-center">Cantidad de Equipos (1-4)</h3>
+                <div class="flex justify-center gap-3">
+                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl team-active bg-slate-500" data-teams="1">1</button>
+                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="2">2</button>
+                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="3">3</button>
+                    <button class="team-sel-btn w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 border-2 border-transparent font-bold text-xl" data-teams="4">4</button>
+                </div>
+            </div>
+
+            <!-- Botones de Dificultad -->
+            <div class="w-full flex flex-col gap-4">
+                <button onclick="initGame('facil')" class="w-full py-4 rounded-xl font-bold text-lg bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-900/50 transition">
+                    Nivel Fácil
+                </button>
+                <button onclick="initGame('medio')" class="w-full py-4 rounded-xl font-bold text-lg bg-yellow-600 hover:bg-yellow-500 shadow-lg shadow-yellow-900/50 transition">
+                    Nivel Medio
+                </button>
+                <button onclick="initGame('dificil')" class="w-full py-4 rounded-xl font-bold text-lg bg-red-600 hover:bg-red-500 shadow-lg shadow-red-900/50 transition">
+                    Nivel Difícil
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="game-screen" class="hidden flex-col gap-4 fade-in w-full">
+            
+            <!-- Panel de Equipos (Top Bar) -->
+            <div id="teams-panel" class="flex justify-around gap-2 mb-2 flex-wrap">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl w-full">
+                <!-- Temporizador -->
+                <div class="flex justify-between text-sm text-slate-400 mb-1">
+                    <span id="question-counter" class="font-bold text-yellow-400">Pregunta 1/20</span>
+                    <span id="time-text">20s</span>
+                </div>
+                <div class="timer-bar-container">
+                    <div id="timer-bar" class="timer-bar"></div>
+                </div>
+
+                <!-- Categoría -->
+                <div class="flex justify-center mb-4">
+                    <span id="category-badge" class="px-4 py-1 rounded-full bg-blue-900 text-blue-200 text-sm font-semibold border border-blue-700">
+                        Categoría
+                    </span>
+                </div>
+
+                <!-- Imagen (Opcional) -->
+                <div id="image-container" class="hidden w-full flex justify-center mb-6">
+                    <img id="question-image" src="" alt="Imagen de la pregunta" class="max-h-48 rounded-lg shadow-md border border-slate-600 object-contain">
+                </div>
+
+                <!-- Pregunta -->
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8 leading-relaxed">
+                    ¿Pregunta?
+                </h2>
+
+                <!-- Opciones -->
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Botones generados dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Explicación (Aparece tras responder) -->
+            <div id="explanation-container" class="hidden glass-panel p-6 rounded-2xl border-l-4 border-l-blue-500 fade-in">
+                <h3 class="font-bold text-lg mb-2 text-blue-400 flex items-center gap-2">
+                    <span>💡</span> Dato Interesante
+                </h3>
+                <p id="explanation-text" class="text-slate-300 leading-relaxed"></p>
+                <div class="mt-6 flex justify-end">
+                    <button id="next-btn" onclick="nextTurn()" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold shadow-lg transition">
+                        Siguiente Equipo ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="results-screen" class="hidden glass-panel p-8 rounded-2xl flex-col items-center text-center fade-in">
+            <span class="text-6xl mb-4 block">🏁</span>
+            <h2 class="text-3xl font-bold text-yellow-400 mb-6">¡Juego Terminado!</h2>
+            
+            <div id="final-podium" class="w-full flex flex-col gap-3 mb-8">
+                <!-- Podio dinámico -->
+            </div>
+
+            <button onclick="returnToHome()" class="px-8 py-4 bg-slate-700 hover:bg-slate-600 rounded-xl font-bold shadow-lg transition">
+                Volver al Menú Principal
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal Logro "Erudito" -->
+    <div id="celebration-modal">
+        <div class="celebration-content">
+            <span class="text-7xl block mb-4">🎓</span>
+            <h2 class="text-3xl font-extrabold text-yellow-400 mb-2">¡ERUDITO BÍBLICO!</h2>
+            <p id="celeb-team-name" class="text-xl mb-4">¡El Equipo X ha alcanzado 10 aciertos!</p>
+            <p class="text-slate-400 mb-6 text-sm">Excelente conocimiento de las Escrituras.</p>
+            <button onclick="closeCelebration()" class="px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-bold rounded-lg transition">
+                Continuar Juego
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">¡Notificación!</div>
+
+    <script>
+        // --- STREAMING_CHUNK:Inicializando Base de Datos de Preguntas... ---
+        const questionsDB = [
+            // --- FÁCIL ---
+            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xTzZgd5Q/Noe.webp", question: "Lee la pista en la imagen. ¿De quién se trata?", options: ["Lot", "Moisés", "Noé", "Abrahán"], correctIndex: 2, explanation: "Noé fue un hombre justo que construyó un arca enorme por mandato de Dios para salvar a su familia y a los animales del Diluvio universal." },
+            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/qM3FQ7wk/David.webp", question: "¿Quién es este valiente personaje?", options: ["David", "Josué", "Gedeón", "Sansón"], correctIndex: 0, explanation: "David, siendo apenas un joven pastor, confió en Jehová y derrotó al gigante filisteo Goliat usando solo una honda y piedras." },
+            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/MKQLtG5z/Jonas.webp", question: "¿A quién le ocurrió esto?", options: ["Pedro", "Jonás", "Pablo", "Elías"], correctIndex: 1, explanation: "Jonás intentó huir de la misión que Dios le dio en Nínive, pero tras una tormenta, fue tragado por un enorme pez donde estuvo 3 días." },
+            { difficulty: "facil", category: "Descubre el Personaje", image: "https://i.postimg.cc/BQKzNvpS/daniel.webp", question: "¿Quién mantuvo su costumbre de orar a pesar de la ley?", options: ["Jeremías", "Daniel", "Ezequiel", "Isaías"], correctIndex: 1, explanation: "Daniel continuó orando a Jehová tres veces al día, lo que lo llevó a ser arrojado al foso de los leones, de donde Dios lo rescató." },
+            { difficulty: "facil", category: "Cronología", image: "https://i.postimg.cc/tCxcDgkR/Creacion.webp", question: "¿Qué evento representa esta línea de tiempo?", options: ["La reconstrucción del templo", "El diluvio", "La Creación de la Tierra", "Las plagas de Egipto"], correctIndex: 2, explanation: "Génesis describe que Dios preparó la Tierra para los seres humanos durante 6 'días' creativos (períodos largos de tiempo) y descansó en el séptimo." },
+            { difficulty: "facil", category: "Creencias de los Testigos", question: "Si alguien es una 'buena persona', ¿a dónde enseña la Biblia que irá al morir?", options: ["Al cielo como ángel", "Al cielo si fue bautizado", "Dormirá hasta la resurrección en un Paraíso terrestre", "Al purgatorio para purificarse"], correctIndex: 2, explanation: "Salmo 37:29 dice: 'Los justos heredarán la tierra y vivirán en ella para siempre'. Solo un rebaño pequeño de 144.000 va al cielo." },
+            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Qué dice la Biblia sobre el origen de la vida?", options: ["Llegó por casualidad", "Dios usó la evolución", "Dios es la fuente de la vida", "Es un misterio sin respuesta"], correctIndex: 2, explanation: "Salmo 36:9 dice dirigido a Dios: 'En ti está la fuente de la vida'. Creemos en un Creador inteligente." },
+            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Qué enseñan los Testigos de Jehová sobre la cruz?", options: ["Que Jesús murió en una", "Que es un símbolo de protección", "Que Jesús murió en un madero o poste vertical", "Que debe venerarse pero no adorarse"], correctIndex: 2, explanation: "La palabra griega 'staurós' significa madero o poste. No hay evidencia de que se usara un madero transversal. Además, rechazamos venerar el instrumento de ejecución." },
+            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Por qué sufrimos y morimos?", options: ["Es un castigo de Dios por nuestros pecados", "Dios nos necesita en el cielo", "Es una prueba de fe", "Heredamos el pecado de Adán y Eva"], correctIndex: 3, explanation: "Romanos 5:12 explica que el pecado entró en el mundo por medio de un solo hombre (Adán), y con el pecado la muerte." },
+            { difficulty: "facil", category: "Enseñanzas Básicas", question: "¿Cuál es la cualidad principal de Jehová?", options: ["Justicia", "Poder", "Amor", "Sabiduría"], correctIndex: 2, explanation: "1 Juan 4:8 lo resume claramente: 'Dios es amor'. Es la esencia de su ser." },
+            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Por qué los Testigos de Jehová no participan en la guerra?", options: ["Por cobardía", "Porque aman a sus enemigos y son neutrales", "Porque no les interesa la política", "Porque no creen en los gobiernos"], correctIndex: 1, explanation: "Jesús dijo a sus seguidores que amaran a sus enemigos y afirmó: 'Mi reino no es parte de este mundo' (Juan 18:36)." },
+            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién fue elegido para sacar a los israelitas de Egipto?", options: ["Aarón", "Moisés", "Josué", "Caleb"], correctIndex: 1, explanation: "Moisés fue elegido por Jehová en la zarza ardiente para ser el líder y libertador de Israel." },
+            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién fue la madre humana de Jesús?", options: ["Marta", "Rut", "María", "Ester"], correctIndex: 2, explanation: "María, una joven virgen de Nazaret, concibió a Jesús por medio del espíritu santo." },
+            { difficulty: "facil", category: "Descubre el Personaje", question: "¿Quién preparó el camino para el ministerio de Jesús?", options: ["Elías", "Pedro", "Juan el Bautista", "Isaías"], correctIndex: 2, explanation: "Juan el Bautista bautizó con agua en símbolo de arrepentimiento y presentó a Jesús como el 'Cordero de Dios'." },
+            { difficulty: "facil", category: "Creencias de los Testigos", question: "¿Cuál es el nombre del Dios Todopoderoso?", options: ["Señor", "Jehová", "Jesús", "El Creador"], correctIndex: 1, explanation: "Salmo 83:18 dice: 'Que la gente sepa que tu nombre es Jehová, que solo tú eres el Altísimo sobre toda la tierra'." },
+            { difficulty: "facil", category: "Prácticas Espiritistas", question: "¿Qué actitud debe tener el cristiano frente al horóscopo o los videntes?", options: ["Consultarlos solo por diversión", "Creer en ellos solo si no hacen daño", "Rechazarlos totalmente porque nos ponen en contacto con los demonios", "Son inofensivos porque no son reales"], correctIndex: 2, explanation: "La Biblia condena tajantemente la adivinación y el espiritismo, ya que son formas de comunicarse con los demonios." },
+            { difficulty: "facil", category: "Neutralidad", question: "Cuando se toca el himno nacional o se saluda a la bandera, ¿qué debe hacer un cristiano?", options: ["Participar para no ofender a los demás", "Respetar el acto sin participar, pues rendir honores es idolatría", "Burlarse de quienes participan", "Abandonar el lugar inmediatamente"], correctIndex: 1, explanation: "Los cristianos respetan a las autoridades, pero dan devoción exclusiva a Jehová, tal como hicieron Sadrac, Mesac y Abednego ante la imagen en Babilonia." },
+            { difficulty: "facil", category: "Reuniones", question: "Según Hebreos 10:24, 25, ¿cuál es uno de los propósitos principales de las reuniones de congregación?", options: ["Hacer vida social", "Recolectar donaciones", "Motivarnos a mostrar amor y hacer buenas obras", "Relajarnos y desconectar del mundo"], correctIndex: 2, explanation: "Las reuniones nos dan la oportunidad de animarnos mutuamente, aprender de la Palabra de Dios y fortalecer nuestra fe." },
+            { difficulty: "facil", category: "Fiestas", question: "¿Por qué los testigos de Jehová no celebran cumpleaños?", options: ["Porque creen que nacemos con pecado", "Por sus raíces paganas y los malos ejemplos bíblicos asociados a ellos", "Para no gastar dinero", "Porque prefieren los aniversarios"], correctIndex: 1, explanation: "La Biblia solo menciona dos cumpleaños, y en ambos hubo asesinatos. Además, sus orígenes están ligados a supersticiones de astrología antigua." },
+
+            // --- MEDIO ---
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/SxBkDKwp/Zaqueo-(1).webp", question: "¿Quién es este personaje que quería ver a Jesús?", options: ["Mateo", "Zaqueo", "Bartimeo", "Nicodemo"], correctIndex: 1, explanation: "Zaqueo, un recaudador de impuestos rico y de baja estatura, se subió a un sicómoro para poder ver a Jesús pasar por Jericó." },
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/MpCqdGhz/Timoteo-(1).webp", question: "¿De qué excelente compañero de Pablo hablamos?", options: ["Tito", "Bernabé", "Marcos", "Timoteo"], correctIndex: 3, explanation: "Timoteo fue instruido desde la infancia por su madre Eunice y su abuela Loida, llegando a ser un gran misionero junto a Pablo." },
+            { difficulty: "medio", category: "Descubre el Personaje", image: "https://i.postimg.cc/Z5G4Vq1T/Rut-(1).webp", question: "¿Qué mujer moabita le dijo esto a su suegra Noemí?", options: ["Orpá", "Rut", "Rahab", "Dalila"], correctIndex: 1, explanation: "Rut demostró un amor leal extraordinario hacia Noemí y hacia Jehová al decir: 'Tu pueblo será mi pueblo, y tu Dios mi Dios'." },
+            { difficulty: "medio", category: "Cronología", image: "https://i.postimg.cc/0yTPcNL5/Decierto-(1).webp", question: "¿A qué evento bíblico corresponde esta línea de tiempo?", options: ["Exilio en Babilonia", "Reinado de Saúl", "El viaje de Israel por el desierto", "Construcción del muro de Nehemías"], correctIndex: 2, explanation: "Los israelitas vagaron 40 años por el desierto debido a su falta de fe tras escuchar a los espías que enviaron a Canaán." },
+            { difficulty: "medio", category: "Profecías", image: "https://i.postimg.cc/LsjR7ppd/reino-de-mil-anos-(1).webp", question: "¿Qué ocurrirá durante este período según Apocalipsis?", options: ["El fin del mundo", "El Reinado Milenario de Cristo", "La gran tribulación", "El diluvio"], correctIndex: 1, explanation: "Apocalipsis 20 habla del período de 1.000 años en los que Satanás estará atado y Cristo reinará para devolver a la humanidad a la perfección." },
+            { difficulty: "medio", category: "Creencias de los Testigos", question: "Si la vida de un Testigo está en peligro grave durante una operación, ¿se permite recibir una transfusión de sangre?", options: ["Sí, la vida es lo primero", "No, la ley de Dios de abstenerse de sangre es absoluta", "Queda a decisión de los ancianos", "Sí, si se firma un documento eximiendo a Dios"], correctIndex: 1, explanation: "Hechos 15:29 manda a los cristianos 'abstenerse de sangre'. No hay excepciones bíblicas para emergencias médicas." },
+            { difficulty: "medio", category: "Creencias de los Testigos", question: "¿A quiénes representan los 'ungidos' o 'el rebaño pequeño'?", options: ["A los líderes de todas las religiones", "A los que sobrevivirán al Armagedón", "A los 144.000 que reinarán en el cielo con Jesús", "A todos los cristianos fieles de la historia"], correctIndex: 2, explanation: "Apocalipsis 14:1-4 habla de 144.000 comprados de la tierra que estarán con el Cordero en el monte Sion celestial." },
+            { difficulty: "medio", category: "Creencias de los Testigos", question: "¿Celebramos los Testigos de Jehová el cumpleaños de Jesús en Navidad?", options: ["Sí, pero de forma modesta", "No, la fecha es incorrecta y sus raíces son paganas", "Solo lo celebramos el 25 de diciembre", "Sí, pero sin intercambiar regalos"], correctIndex: 1, explanation: "No hay evidencia de que los primeros cristianos lo celebraran. Además, Jesús probablemente nació en octubre, no en diciembre (época de frío donde los pastores no estarían a campo raso)." },
+            { difficulty: "medio", category: "Enseñanzas Básicas", question: "¿Qué enseñó Jesús sobre el rescate?", options: ["Que nos libra de la pobreza material", "Que dio su vida en rescate a cambio de muchos", "Que rescata solo a los de una nacionalidad", "Que debemos pagar a la Iglesia por él"], correctIndex: 1, explanation: "Mateo 20:28 dice que el Hijo del hombre vino 'a dar su alma en rescate a cambio de muchos'." },
+            { difficulty: "medio", category: "Doctrina", question: "¿Enseña la Biblia que Jehová, Jesús y el espíritu santo son un solo Dios?", options: ["Sí, es la doctrina central", "La Biblia es ambigua al respecto", "No, enseña que Jehová es el Todopoderoso y Jesús su Hijo", "Solo enseña que Jehová y Jesús son iguales"], correctIndex: 2, explanation: "La Biblia muestra claramente que Jesús está subordinado al Padre (Juan 14:28) y que el espíritu santo no es una persona, sino la fuerza activa de Dios." },
+            { difficulty: "medio", category: "Doctrina", question: "¿Qué es el 'infierno' bíblico (Sheol o Hades)?", options: ["Un lugar de tormento y fuego", "Un estado de separación de Dios", "El sepulcro común de la humanidad", "El purgatorio"], correctIndex: 2, explanation: "La Biblia enseña que en el Sheol no hay consciencia ni dolor (Eclesiastés 9:10). Es simplemente el sepulcro de donde Dios resucitará a las personas." },
+            { difficulty: "medio", category: "Profecías", question: "En el libro de Apocalipsis, ¿a qué representa 'Babilonia la Grande'?", options: ["A un imperio político mundial", "A la antigua ciudad reconstruida", "Al imperio mundial de la religión falsa", "A las Naciones Unidas"], correctIndex: 2, explanation: "Se la describe como una prostituta por sus relaciones ilícitas con los líderes políticos y representa a todas las religiones que enseñan falsedades." },
+            { difficulty: "medio", category: "Bautismo", question: "¿Qué simboliza el bautismo en agua para un testigo de Jehová?", options: ["El perdón de los pecados", "La entrada a la iglesia local", "La dedicación personal y total a Jehová", "Un rito de paso a la madurez"], correctIndex: 2, explanation: "Es una demostración pública de que la persona le ha prometido en oración a Jehová que hará su voluntad para siempre." },
+            { difficulty: "medio", category: "Vida Cristiana", question: "Un hermano es invitado a postularse para alcalde. ¿Qué principio le aplica?", options: ["Debe aceptar para beneficiar a la comunidad", "Debe rechazarlo, manteniendo neutralidad política", "Puede aceptar si no tiene partido", "Depende de su conciencia"], correctIndex: 1, explanation: "Jesús dijo que sus seguidores 'no son parte del mundo'. Los testigos de Jehová confían en que solo el Reino de Dios puede solucionar los problemas de la humanidad." },
+
+            // --- DIFÍCIL ---
+            { difficulty: "dificil", category: "Profecías", image: "https://i.postimg.cc/FK0mq44N/70-semanas.webp", question: "¿Qué evento principal anunciaba esta profecía de Daniel 9?", options: ["La destrucción de Babilonia", "La aparición y muerte del Mesías", "El regreso de los exiliados", "La caída de Roma"], correctIndex: 1, explanation: "La profecía de las 70 semanas marcaba el tiempo exacto de la aparición del Mesías (Jesús) en el año 29 e.c. y su posterior muerte de sacrificio." },
+            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/xdLY7229/Nabucodonosor.webp", question: "¿Qué rey de Babilonia tuvo este sueño profético?", options: ["Belsasar", "Ciro", "Nabucodonosor", "Darío"], correctIndex: 2, explanation: "Nabucodonosor soñó con una estatua gigante de diferentes metales que representaba la sucesión de potencias mundiales desde Babilonia en adelante." },
+            { difficulty: "dificil", category: "Descubre el Personaje", image: "https://i.postimg.cc/cJfZjSSs/Jezabel.webp", question: "¿Quién fue esta malvada reina de Israel?", options: ["Atalía", "Jezabel", "Vasti", "Mical"], correctIndex: 1, explanation: "Jezabel, esposa del rey Acab, promovió la adoración a Baal y asesinó a muchos profetas de Jehová hasta que tuvo un trágico fin." },
+            { difficulty: "dificil", category: "Profecías", image: "https://i.postimg.cc/yN0B5HHY/Ciro.webp", question: "¿Qué rey persa fue predicho por nombre por Isaías?", options: ["Ciro el Grande", "Asuero", "Darío el Medo", "Artajerjes"], correctIndex: 0, explanation: "Isaías profetizó casi 200 años antes que Ciro sería el conquistador de Babilonia y liberaría a los judíos." },
+            { difficulty: "dificil", category: "Cronología", question: "¿Qué profecía del libro de Daniel nos da la clave para llegar al año 1914?", options: ["La profecía de las 70 semanas", "La profecía de los 'siete tiempos' y el árbol enorme", "El rey del norte y el sur", "La estatua de Nabucodonosor"], correctIndex: 1, explanation: "Los 'siete tiempos' equivalen a 2.520 años desde 607 a.e.c., marcando el fin de los Tiempos de los Gentiles en 1914 e.c., cuando Cristo comenzó a reinar." },
+            { difficulty: "dificil", category: "Disciplina", question: "Si un cristiano comete un pecado grave, ¿es sacado de la congregación automáticamente?", options: ["Sí, sin excepción", "No, ser sacado ocurre solo si no hay arrepentimiento genuino", "Se le suspende por un año", "Paga una multa a la congregación"], correctIndex: 1, explanation: "La meta de los ancianos es ayudar al pecador. Sacar a alguien de la congregación (expulsarlo) es una medida extrema que solo se aplica si la persona rechaza la ayuda y no se arrepiente." },
+            { difficulty: "dificil", category: "Creencias de los Testigos", question: "¿Por qué los Testigos evitan celebrar 'baby showers' (fiestas de nacimiento) y revelaciones de sexo si no tienen raíces paganas directas?", options: ["No las evitan por completo, es un asunto de conciencia", "Porque la Biblia condena celebrar la vida", "Porque cuestan dinero", "Porque distraen de la predicación"], correctIndex: 0, explanation: "A diferencia de la Navidad, estas fiestas no tienen raíces paganas ineludibles. Celebrar el embarazo es un asunto de conciencia personal, siempre que se mantenga la modestia y no haya supersticiones." },
+            { difficulty: "dificil", category: "Profecías", question: "Al final del Reinado Milenario de Cristo, ¿qué sucederá con Satanás?", options: ["Será destruido inmediatamente", "Tendrá una segunda oportunidad", "Será soltado del abismo por 'un poco de tiempo'", "Gobernará la tierra con Jesús"], correctIndex: 2, explanation: "Apocalipsis 20 indica que Satanás será soltado para una prueba final sobre la humanidad perfecta antes de ser destruido para siempre." },
+            { difficulty: "dificil", category: "Doctrina", question: "Si un médico dice que *quizás* sea indispensable una transfusión, ¿qué excepción permite la Biblia?", options: ["Se permite en caso de emergencia de vida o muerte", "La Biblia no permite ninguna excepción para el uso de la sangre", "Se permite sangre de un familiar cercano", "Se permite la autotransfusión"], correctIndex: 1, explanation: "El mandato de Hechos 15 de 'abstenerse de sangre' es absoluto y no contempla excepciones médicas para salvar la vida violando la ley de Dios." },
+            { difficulty: "dificil", category: "Historia", question: "Si Dios es amor, ¿por qué ordenó destruir naciones enteras como los cananeos?", options: ["El Dios del AT era más severo", "Fue un acto de justicia, pues practicaban atrocidades graves", "Necesitaban la tierra a toda costa", "Fue una alegoría"], correctIndex: 1, explanation: "Jehová es amor y justicia. Los cananeos cometían atrocidades extremas como quemar vivos a sus hijos. Dios les dio tiempo pero finalmente ejecutó juicio." },
+            { difficulty: "dificil", category: "Doctrina", question: "Si alguien dice: 'Oremos al espíritu santo', ¿qué corrección bíblica le harías?", options: ["Que ore con más fe", "Que el espíritu santo no es una persona y se debe orar solo a Jehová", "Que ore a Jesús", "Ninguna, es correcto"], correctIndex: 1, explanation: "El espíritu santo es la fuerza activa de Dios. La Biblia nos enseña a orar al Padre (Jehová) en el nombre del Hijo (Jesús), pidiendo por espíritu santo." },
+            { difficulty: "dificil", category: "Vida Cristiana", question: "Aunque la Biblia no recomienda la separación, ¿en qué caso extremo podría justificarse?", options: ["Solo en caso de adulterio", "Si el cónyuge no es Testigo", "Maltrato físico gravísimo o riesgo extremo espiritual", "Si discuten mucho"], correctIndex: 2, explanation: "Para el divorcio que permite nuevo matrimonio, la única base es la 'porneia'. Pero para separación, se contempla la negativa absoluta a mantener la familia, violencia extrema o peligro espiritual grave." }
+        ];
+
+        // --- ESTADO GLOBAL ---
+        let currentLevel = '';
+        let gameQuestions = [];
+        let currentQuestionIndex = 0;
+        
+        let numTeams = 1;
+        let teams = []; // Array de objetos { score: 0, perks: [], skipNextTurn: false, name: '' }
+        let currentTeamTurn = 0; 
+        let startingTeamForRound = 0; 
+        let teamsTriedCurrentQuestion = []; 
+        let isAnsweredFinal = false; 
+        
+        let timerInterval;
+        let timeLeft = 20;
+
+        // --- STREAMING_CHUNK:Lógica de Inicialización de Equipos... ---
+        const btnTeamSels = document.querySelectorAll('.team-sel-btn');
+        btnTeamSels.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                btnTeamSels.forEach(b => b.classList.remove('team-active', 'bg-slate-500'));
+                e.target.classList.add('team-active', 'bg-slate-500');
+                numTeams = parseInt(e.target.dataset.teams);
+            });
+        });
+
+        // --- STREAMING_CHUNK:Lógica del Motor del Juego... ---
+        function initGame(difficulty) {
+            currentLevel = difficulty;
+            
+            // Inicializar equipos
+            teams = [];
+            for(let i=0; i<numTeams; i++) {
+                teams.push({ score: 0, perks: [], skipNextTurn: false, name: `Equipo ${i+1}` });
+            }
+            currentTeamTurn = 0;
+            startingTeamForRound = 0;
+
+            // Filtrar y mezclar
+            const filteredQuestions = questionsDB.filter(q => q.difficulty === difficulty);
+            for (let i = filteredQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredQuestions[i], filteredQuestions[j]] = [filteredQuestions[j], filteredQuestions[i]];
+            }
+            
+            // 20 preguntas por ronda
+            gameQuestions = filteredQuestions.slice(0, 20);
+            currentQuestionIndex = 0;
+
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('game-screen').classList.add('flex');
+
+            loadQuestion();
+        }
+
+        function renderTeamsUI() {
+            const panel = document.getElementById('teams-panel');
+            panel.innerHTML = '';
+            
+            teams.forEach((team, index) => {
+                const isActive = (index === currentTeamTurn) ? 'team-active bg-slate-700' : 'bg-slate-800 opacity-75';
+                const turnIndicator = (index === currentTeamTurn) ? '<span class="text-xs text-yellow-400 block mb-1">¡TU TURNO!</span>' : '';
+                
+                // Botones de Poderes
+                let perksHTML = '';
+                if(team.perks.length > 0) {
+                    perksHTML = '<div class="mt-2 flex gap-1 justify-center">';
+                    team.perks.forEach((perk, perkIndex) => {
+                        perksHTML += `<button onclick="usePerk(${index}, ${perkIndex})" class="perk-btn" title="${perk.name}" ${index !== currentTeamTurn || isAnsweredFinal ? 'disabled' : ''}>${perk.icon}</button>`;
+                    });
+                    perksHTML += '</div>';
+                }
+
+                const skippedWarning = team.skipNextTurn ? '<span class="text-xs text-red-400 block">Turno Saltado</span>' : '';
+
+                panel.innerHTML += `
+                    <div class="team-card ${isActive} rounded-xl p-3 text-center min-w-[100px] shadow-lg relative">
+                        ${turnIndicator}
+                        <h3 class="font-bold text-sm text-slate-300">${team.name}</h3>
+                        <p class="text-2xl font-extrabold text-white">${team.score}</p>
+                        ${skippedWarning}
+                        ${perksHTML}
+                    </div>
+                `;
+            });
+        }
+
+        // --- STREAMING_CHUNK:Carga de Preguntas e Imágenes... ---
+        function loadQuestion() {
+            if (currentQuestionIndex >= gameQuestions.length) {
+                showResults();
+                return;
+            }
+
+            isAnsweredFinal = false;
+            teamsTriedCurrentQuestion = [];
+
+            // Limpiar skip de turno
+            if(teams[currentTeamTurn].skipNextTurn) {
+                teams[currentTeamTurn].skipNextTurn = false;
+                advanceTurnSubRound();
+                return; 
+            }
+
+            const q = gameQuestions[currentQuestionIndex];
+            
+            document.getElementById('question-counter').innerText = `Pregunta ${currentQuestionIndex + 1} / ${gameQuestions.length}`;
+            document.getElementById('category-badge').innerText = q.category;
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Imagen
+            const imgContainer = document.getElementById('image-container');
+            const imgElem = document.getElementById('question-image');
+            if (q.image) {
+                imgElem.src = q.image;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            // Opciones
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option w-full p-4 rounded-xl bg-slate-800 border border-slate-600 font-semibold text-lg hover:bg-slate-700 text-left';
+                btn.innerText = opt;
+                btn.onclick = () => processTurnResult(index === q.correctIndex, btn, index);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('explanation-container').classList.add('hidden');
+            
+            renderTeamsUI();
+            startTimer();
+        }
+
+        // --- STREAMING_CHUNK:Gestión del Temporizador... ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 20; // 20 Segundos actualizados
+            updateTimerUI();
+
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            void timerBar.offsetWidth; // Reflow
+            timerBar.style.transition = 'width 1s linear, background-color 0.3s';
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    processTurnResult(false, null); 
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            document.getElementById('time-text').innerText = `${timeLeft}s`;
+            const timerBar = document.getElementById('timer-bar');
+            
+            const percentage = (timeLeft / 20) * 100; // Ajustado a 20s
+            timerBar.style.width = `${percentage}%`;
+            
+            if (timeLeft <= 5) {
+                timerBar.classList.add('timer-warning');
+            } else {
+                timerBar.classList.remove('timer-warning');
+            }
+        }
+
+        // --- STREAMING_CHUNK:Procesamiento de Turnos y Robos... ---
+        function processTurnResult(isCorrect, buttonElem, selectedIndex = -1) {
+            clearInterval(timerInterval);
+            teamsTriedCurrentQuestion.push(currentTeamTurn);
+
+            const q = gameQuestions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(b => b.disabled = true); 
+
+            if (isCorrect) {
+                // ACIERTO (1 Punto)
+                isAnsweredFinal = true;
+                if(buttonElem) buttonElem.classList.add('correct');
+                
+                teams[currentTeamTurn].score += 1;
+                renderTeamsUI();
+                
+                // Chequear Logro a los 10 puntos
+                if(teams[currentTeamTurn].score === 10) {
+                    showCelebration(teams[currentTeamTurn].name);
+                }
+
+                // Dar premio (Perk) cada 5 puntos
+                if(teams[currentTeamTurn].score % 5 === 0 && numTeams > 1) {
+                    awardPerk(currentTeamTurn);
+                }
+                
+                showExplanation();
+                
+            } else {
+                // ERROR
+                if(buttonElem) buttonElem.classList.add('incorrect');
+                
+                if (numTeams > 1 && teamsTriedCurrentQuestion.length < numTeams) {
+                    // Robo disponible
+                    showToast("¡Incorrecto! Oportunidad de Robo 🔄");
+                    setTimeout(() => {
+                        advanceTurnSubRound();
+                    }, 1500);
+                } else {
+                    // Todos fallaron o solo hay 1 equipo
+                    isAnsweredFinal = true;
+                    buttons[q.correctIndex].classList.add('correct'); // Mostrar la correcta
+                    showExplanation();
+                }
+            }
+        }
+
+        function advanceTurnSubRound() {
+            currentTeamTurn = (currentTeamTurn + 1) % numTeams;
+            
+            if(teams[currentTeamTurn].skipNextTurn) {
+                 teams[currentTeamTurn].skipNextTurn = false;
+                 teamsTriedCurrentQuestion.push(currentTeamTurn);
+                 showToast(`¡${teams[currentTeamTurn].name} pierde su turno!`);
+                 
+                 if(teamsTriedCurrentQuestion.length >= numTeams) {
+                     const q = gameQuestions[currentQuestionIndex];
+                     document.querySelectorAll('.btn-option')[q.correctIndex].classList.add('correct');
+                     showExplanation();
+                     return;
+                 } else {
+                     setTimeout(advanceTurnSubRound, 1000);
+                     return;
+                 }
+            }
+
+            renderTeamsUI();
+            
+            // Reactivar botones no fallados y reiniciar tiempo para el robo
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(b => {
+                if(!b.classList.contains('incorrect')) b.disabled = false;
+            });
+            startTimer();
+        }
+
+        function nextTurn() {
+            // Rotar quién inicia la siguiente ronda
+            startingTeamForRound = (startingTeamForRound + 1) % numTeams;
+            currentTeamTurn = startingTeamForRound;
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function showExplanation() {
+            const expContainer = document.getElementById('explanation-container');
+            document.getElementById('explanation-text').innerText = gameQuestions[currentQuestionIndex].explanation;
+            expContainer.classList.remove('hidden');
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex >= gameQuestions.length - 1) {
+                nextBtn.innerText = "Ver Resultados 🏆";
+            } else {
+                nextBtn.innerText = `Siguiente Equipo: ${teams[(startingTeamForRound + 1) % numTeams].name} ➡️`;
+            }
+        }
+
+        // --- STREAMING_CHUNK:Sistema de Recompensas (Perks)... ---
+        let turnDirection = 1; 
+
+        function awardPerk(teamIndex) {
+            const availablePerks = [
+                { type: 'reversa', name: 'Reversa', icon: '🔄', desc: 'Invierte el orden de los turnos' },
+                { type: 'salto', name: 'Salto', icon: '⏭️', desc: 'Salta el turno del siguiente equipo' },
+                { type: 'penalizacion', name: 'Roba Puntos', icon: '⚡', desc: 'Resta 1 punto al siguiente equipo' }
+            ];
+            const randomPerk = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+            
+            teams[teamIndex].perks.push(randomPerk);
+            showToast(`¡Premio! ${teams[teamIndex].name} ganó: ${randomPerk.name} ${randomPerk.icon}`);
+            renderTeamsUI();
+        }
+
+        function usePerk(teamIndex, perkIndex) {
+            const perk = teams[teamIndex].perks[perkIndex];
+            const team = teams[teamIndex];
+            
+            if(perk.type === 'reversa') {
+                turnDirection *= -1;
+                showToast(`¡${team.name} usó Reversa! El orden cambia 🔄.`);
+            } else if (perk.type === 'salto') {
+                let next = (currentTeamTurn + turnDirection + numTeams) % numTeams;
+                teams[next].skipNextTurn = true;
+                showToast(`¡${team.name} usó Salto! ${teams[next].name} perderá su turno ⏭️.`);
+            } else if (perk.type === 'penalizacion') {
+                let next = (currentTeamTurn + turnDirection + numTeams) % numTeams;
+                teams[next].score -= 1; 
+                showToast(`¡${team.name} restó 1 punto a ${teams[next].name} ⚡!`);
+            }
+
+            teams[teamIndex].perks.splice(perkIndex, 1);
+            renderTeamsUI();
+        }
+
+        // --- STREAMING_CHUNK:Utilidades Visuales (Toasts y Resultados)... ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function showCelebration(teamName) {
+            document.getElementById('celeb-team-name').innerText = `¡${teamName} ha alcanzado 10 aciertos!`;
+            document.getElementById('celebration-modal').style.display = 'flex';
+            
+            // Confeti
+            const modal = document.getElementById('celebration-modal');
+            for(let i=0; i<50; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                conf.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                modal.appendChild(conf);
+            }
+        }
+
+        function closeCelebration() {
+            const modal = document.getElementById('celebration-modal');
+            modal.style.display = 'none';
+            const confettis = modal.querySelectorAll('.confetti');
+            confettis.forEach(c => c.remove());
+        }
+
+        function showResults() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('flex');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('results-screen').classList.add('flex');
+
+            const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
+            const podium = document.getElementById('final-podium');
+            podium.innerHTML = '';
+
+            const medals = ['🥇', '🥈', '🥉', '🏅'];
+            
+            sortedTeams.forEach((team, index) => {
+                podium.innerHTML += `
+                    <div class="flex items-center justify-between p-4 bg-slate-800 rounded-xl border border-slate-600">
+                        <div class="flex items-center gap-4">
+                            <span class="text-3xl">${medals[index] || medals[3]}</span>
+                            <span class="text-xl font-bold">${team.name}</span>
+                        </div>
+                        <span class="text-2xl font-extrabold text-yellow-400">${team.score} pts</span>
+                    </div>
+                `;
+            });
+        }
+
+        function returnToHome() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('flex');
+            document.getElementById('home-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
